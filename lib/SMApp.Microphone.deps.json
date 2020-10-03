@@ -1,0 +1,172 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.0/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.0": {},
+    ".NETStandard,Version=v2.0/": {
+      "SMApp.Microphone/1.0.0": {
+        "dependencies": {
+          "FSharp.Core": "4.7.0",
+          "NETStandard.Library": "2.0.3",
+          "WebSharper": "4.6.7.408",
+          "WebSharper.FSharp": "4.6.7.408"
+        },
+        "runtime": {
+          "SMApp.Microphone.dll": {}
+        }
+      },
+      "FSharp.Core/4.7.0": {
+        "runtime": {
+          "lib/netstandard2.0/FSharp.Core.dll": {
+            "assemblyVersion": "4.7.0.0",
+            "fileVersion": "4.700.19.40208"
+          }
+        },
+        "resources": {
+          "lib/netstandard2.0/cs/FSharp.Core.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/netstandard2.0/de/FSharp.Core.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard2.0/es/FSharp.Core.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard2.0/fr/FSharp.Core.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard2.0/it/FSharp.Core.resources.dll": {
+            "locale": "it"
+          },
+          "lib/netstandard2.0/ja/FSharp.Core.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/netstandard2.0/ko/FSharp.Core.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/netstandard2.0/pl/FSharp.Core.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/netstandard2.0/pt-BR/FSharp.Core.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/netstandard2.0/ru/FSharp.Core.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/netstandard2.0/tr/FSharp.Core.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/netstandard2.0/zh-Hans/FSharp.Core.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/netstandard2.0/zh-Hant/FSharp.Core.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "NETStandard.Library/2.0.3": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      },
+      "WebSharper/4.6.7.408": {
+        "dependencies": {
+          "FSharp.Core": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/WebSharper.Collections.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          },
+          "lib/netstandard2.0/WebSharper.Control.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          },
+          "lib/netstandard2.0/WebSharper.Core.JavaScript.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          },
+          "lib/netstandard2.0/WebSharper.Core.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          },
+          "lib/netstandard2.0/WebSharper.InterfaceGenerator.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          },
+          "lib/netstandard2.0/WebSharper.JQuery.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "0.0.0.0"
+          },
+          "lib/netstandard2.0/WebSharper.JavaScript.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "0.0.0.0"
+          },
+          "lib/netstandard2.0/WebSharper.Main.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          },
+          "lib/netstandard2.0/WebSharper.Sitelets.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          },
+          "lib/netstandard2.0/WebSharper.Web.dll": {
+            "assemblyVersion": "4.6.0.0",
+            "fileVersion": "4.6.7.408"
+          }
+        }
+      },
+      "WebSharper.FSharp/4.6.7.408": {
+        "dependencies": {
+          "WebSharper": "4.6.7.408"
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SMApp.Microphone/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FSharp.Core/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6Bf2qzSCaJoP6tTfO+a5muUS7QbyJANqSut73zQvwQ9It5P0ITz9VKseeia2ofco30c55EQ0jA2wf2+A2gpGnw==",
+      "path": "fsharp.core/4.7.0",
+      "hashPath": "fsharp.core.4.7.0.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "path": "microsoft.netcore.platforms/1.1.0",
+      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+    },
+    "NETStandard.Library/2.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
+      "path": "netstandard.library/2.0.3",
+      "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    },
+    "WebSharper/4.6.7.408": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iZcWLKYtjYCPtZ/kppHameJ4WQvyDkbv2OsaNGvWoZFUEO4Shf5v6WkG3P0wKCfFEtU3ntk7pGBvQf82MI1yjA==",
+      "path": "websharper/4.6.7.408",
+      "hashPath": "websharper.4.6.7.408.nupkg.sha512"
+    },
+    "WebSharper.FSharp/4.6.7.408": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i6frduh/3YFya26rGMldIVPbYTPViWuinDIxBrpHBpzxAL0D8eKtUCH77kPSf6EqAZucWI4hQna8+foC90nndA==",
+      "path": "websharper.fsharp/4.6.7.408",
+      "hashPath": "websharper.fsharp.4.6.7.408.nupkg.sha512"
+    }
+  }
+}

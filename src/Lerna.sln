@@ -1,0 +1,60 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Lerna.Web", "Lerna.Web\Lerna.Web.fsproj", "{297E962E-25A7-4826-B1AB-672C5AA730FA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lerna.Base", "Lerna.Base\Lerna.Base.csproj", "{B39700CE-2096-4C7C-BC04-22BF6D14BB4B}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Lerna.Base.Fs", "Lerna.Base.Fs\Lerna.Base.Fs.fsproj", "{811DBC03-3079-4CF7-99E6-C28C620069A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{471A2D10-FC79-4425-92A4-CF8234D86D1E}"
+	ProjectSection(SolutionItems) = preProject
+		..\deploy\oc-create-app.cmd = ..\deploy\oc-create-app.cmd
+		..\deploy\oc-deploy-build.cmd = ..\deploy\oc-deploy-build.cmd
+	EndProjectSection
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Lerna.Core", "Lerna.Core\Lerna.Core.fsproj", "{4F3EB21D-99E3-4E88-858C-649AC982E417}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{9487FAAB-6BBF-462C-9BBC-8206A1C9A1F3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lerna.NLU.Wit.Web", "Lerna.NLU.Wit.Web\Lerna.NLU.Wit.Web.csproj", "{F5B1E856-FF3A-4093-B3C5-80474FC0117E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{297E962E-25A7-4826-B1AB-672C5AA730FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{297E962E-25A7-4826-B1AB-672C5AA730FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{297E962E-25A7-4826-B1AB-672C5AA730FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{297E962E-25A7-4826-B1AB-672C5AA730FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B39700CE-2096-4C7C-BC04-22BF6D14BB4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B39700CE-2096-4C7C-BC04-22BF6D14BB4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B39700CE-2096-4C7C-BC04-22BF6D14BB4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B39700CE-2096-4C7C-BC04-22BF6D14BB4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{811DBC03-3079-4CF7-99E6-C28C620069A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{811DBC03-3079-4CF7-99E6-C28C620069A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{811DBC03-3079-4CF7-99E6-C28C620069A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{811DBC03-3079-4CF7-99E6-C28C620069A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F3EB21D-99E3-4E88-858C-649AC982E417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F3EB21D-99E3-4E88-858C-649AC982E417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F3EB21D-99E3-4E88-858C-649AC982E417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F3EB21D-99E3-4E88-858C-649AC982E417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5B1E856-FF3A-4093-B3C5-80474FC0117E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5B1E856-FF3A-4093-B3C5-80474FC0117E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5B1E856-FF3A-4093-B3C5-80474FC0117E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5B1E856-FF3A-4093-B3C5-80474FC0117E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B39700CE-2096-4C7C-BC04-22BF6D14BB4B} = {9487FAAB-6BBF-462C-9BBC-8206A1C9A1F3}
+		{811DBC03-3079-4CF7-99E6-C28C620069A3} = {9487FAAB-6BBF-462C-9BBC-8206A1C9A1F3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {93DA2F01-DE80-4D2C-964E-B49597D49580}
+	EndGlobalSection
+EndGlobal
