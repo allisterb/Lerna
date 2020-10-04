@@ -38,6 +38,9 @@
     <ProjectReference Include="..\Lerna.NLU.Wit.Web\Lerna.NLU.Wit.Web.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="SMApp.BotLibre">
+      <HintPath>..\..\..\SMApp\ext\SMApp.BotLibre\bin\Debug\netstandard2.0\SMApp.BotLibre.dll</HintPath>
+    </Reference>
     <Reference Include="SMApp.JQueryTerminal">
       <HintPath>..\..\lib\SMApp.JQueryTerminal.dll</HintPath>
     </Reference>

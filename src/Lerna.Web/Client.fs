@@ -13,6 +13,7 @@ open WebSharper.UI.Html
 open SMApp.JQueryTerminal
 open SMApp.WebSpeech
 open SMApp.Microphone
+open SMApp.BotLibre
 
 [<JavaScript>]
 module Client =
@@ -60,6 +61,23 @@ module Client =
         else if CUI.Voice = None then 
             echo "No speech synthesis voice is available. Install speech synthesis on this device or computer to use the voice output feature of Selma."
        
+    let initAvatar() =
+        SDK.ApplicationId <- "4277115329081938617";
+        let sdk = new SDKConnection();
+        let web = new WebAvatar();
+        web.Version <- 8.5
+        web.Connection <- sdk;
+        web.Avatar <- "22225225";
+        web.Voice <- "cmu-slt";
+        web.VoiceMod <- "default";
+        web.NativeVoice <- true;
+        web.NativeVoiceName <- "Microsoft David Desktop - English (United States)";
+        web.Width <- 300;
+        web.CreateBox();
+        web.AddMessage("Welcome my name is Lerna. Nice to meet you. What would you like to do?");
+        web.ProcessMessages();
+        debug web
+
     let say' text =        
         match CUI.Voice with
         | None -> 
@@ -137,7 +155,9 @@ module Client =
         let main (term:Terminal) (command:string)  =
             CUI <- { CUI with Term = term }
             do if CUI.Mic = None then initMic main'
-            do if CUI.Voice = None then initSpeech ()
+            do if CUI.Voice = None then 
+                initSpeech ()
+                initAvatar()
             do if ClientState = ClientNotInitialzed then ClientState <- ClientReady
             match command with
             (* Quick commands *)
@@ -179,11 +199,11 @@ module Client =
         let mainOpt =
             Options(
                 Name="Main", 
-                Greetings = "Welcome to Selma. Enter 'hello' or 'hello my name is...(you) to initialize speech recognition, or enter help for more assistance.",
+                Greetings = "Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech recognition, or enter help for more assistance.",
                 Prompt =">"
             )       
         Interpreter(main', (main, mainOpt))
     
-    let run() =
+    let run() =        
         Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore 
         Doc.Empty

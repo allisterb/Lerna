@@ -65,6 +65,36 @@
  document=Global.document;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  Dictionary=Collections&&Collections.Dictionary;
+ ClientExtensions.s=function()
+ {
+  SC$1.$cctor();
+  return SC$1.s;
+ };
+ ClientExtensions.mdbold=function()
+ {
+  SC$1.$cctor();
+  return SC$1.mdbold;
+ };
+ ClientExtensions.mdbblockquote=function()
+ {
+  SC$1.$cctor();
+  return SC$1.mdbblockquote;
+ };
+ ClientExtensions.mdh3=function()
+ {
+  SC$1.$cctor();
+  return SC$1.mdh3;
+ };
+ ClientExtensions.mdh2=function()
+ {
+  SC$1.$cctor();
+  return SC$1.mdh2;
+ };
+ ClientExtensions.mdh1=function()
+ {
+  SC$1.$cctor();
+  return SC$1.mdh1;
+ };
  ClientExtensions.replace_tok=function(token,value,s)
  {
   return Strings.Replace(s,token,value);
@@ -365,6 +395,12 @@
   var r;
   SC$1.$cctor=Global.ignore;
   SC$1.rawOpt=(r={},r.raw=true,r);
+  SC$1.mdh1=new Global.RegExp("^# (.*$)","gim");
+  SC$1.mdh2=new Global.RegExp("^## (.*$)","gim");
+  SC$1.mdh3=new Global.RegExp("^### (.*$)","gim");
+  SC$1.mdbblockquote=new Global.RegExp("/^\\> (.*$)/","gim");
+  SC$1.mdbold=new Global.RegExp("/^\\> (.*$)/","gim");
+  SC$1.s="function parseMarkdown(markdownText) {\r\n        const htmlText = markdownText\r\n        \u0009.replace(/^### (.*$)/gim, '<h3>$1</h3>')\r\n        \u0009.replace(/^## (.*$)/gim, '<h2>$1</h2>')\r\n        \u0009.replace(/^# (.*$)/gim, '<h1>$1</h1>')\r\n        \u0009.replace(/^\\> (.*$)/gim, '<blockquote>$1</blockquote>')\r\n        \u0009.replace(/\\*\\*(.*)\\*\\*/gim, '<b>$1</b>')\r\n        \u0009.replace(/\\*(.*)\\*/gim, '<i>$1</i>')\r\n        \u0009.replace(/!\\[(.*?)\\]\\((.*?)\\)/gim, \"<img alt='$1' src='$2' />\")\r\n        \u0009.replace(/\\[(.*?)\\]\\((.*?)\\)/gim, \"<a href='$2'>$1</a>\")\r\n        \u0009.replace(/\\n$/gim, '<br />')\r\n        \r\n        return htmlText.trim()\r\n    }\r\n    ";
   SC$1.html=function(c)
   {
    return htmModule.elem("html",c);
@@ -1564,7 +1600,7 @@
    return Concurrency.Start((b$4=null,Concurrency.Delay(function()
    {
     sayRandom(CUI.waitAddPhrases(),"symptom entry");
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addSymptomJournalEntry:-378697656",[user().Name,s,l,m$1]),function(a$30)
+    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addSymptomJournalEntry:304997628",[user().Name,s,l,m$1]),function(a$30)
     {
      return a$30==null?(say(function($16)
      {
@@ -1586,7 +1622,7 @@
    return Concurrency.Delay(function()
    {
     sayRandom(CUI.waitRetrievePhrases(),"symptom journal");
-    return(new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getSymptomJournal:-113610444",[u$1]);
+    return(new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getSymptomJournal:-1914884335",[u$1]);
    });
   }
   Main.debug((((Runtime.Curried3(function($16,$17,$18)
@@ -1599,7 +1635,7 @@
    $0:a$1.$0
   }:null),a!=null&&a.$==1&&(a$2=AnonAssert(a.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Intent$1("hello",a$2.$0),a$3!=null&&a$3.$==1&&(a$3.$0[1]==null&&m.$1.$==0))))?(props.Add("started",true),sayRandom(CUI.helloPhrases(),"")):m.$==1&&(a$4=AnonAssert(m.$0),a$4!=null&&a$4.$==1&&(a$5=NLU.Intent$1("hello",a$4.$0),a$5!=null&&a$5.$==1&&(a$5.$0[1]==null&&m.$1.$==0)))?say("Hello, tell me your name to get started."):m.$==1&&(a$6=AnonAssert(m.$0),a$6!=null&&a$6.$==1&&(a$7=NLU.Intent$1("hello",a$6.$0),a$7!=null&&a$7.$==1&&(a$8=NLU.Entity1Of1("contact",a$7.$0[1]),a$8!=null&&a$8.$==1&&(m.$1.$==0&&($3=a$8.$0,true)))))?(u=$3.get_Value(),sayRandom(CUI.waitRetrievePhrases(),"user name"),Concurrency.Start((b=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:2060317512",[u]),function(a$30)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1323481165",[u]),function(a$30)
    {
     var u$1;
     return a$30==null?(say((function($16)
@@ -1608,7 +1644,7 @@
      {
       return $16("I did not find a user with the name "+Utils.toSafe($17)+".");
      };
-    }(Global.id))(u)),ask("addUser",u),Concurrency.Zero()):(u$1=a$30.$0,Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:444166523",[u$1.Name]),function()
+    }(Global.id))(u)),ask("addUser",u),Concurrency.Zero()):(u$1=a$30.$0,Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:1546184882",[u$1.Name]),function()
     {
      props.Add("user",u$1);
      sayRandom(CUI.helloUserPhrases(),(function($16)
@@ -1618,7 +1654,7 @@
        return $16(Utils.prettyPrint($17));
       };
      }(Global.id))(props.get_Item("user")));
-     return u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:-1738307680",[u$1.LastLoggedIn.$0]),function(a$31)
+     return u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:837315004",[u$1.LastLoggedIn.$0]),function(a$31)
      {
       say((function($16)
       {
@@ -1634,7 +1670,7 @@
   })),null)):m.$==1&&(a$9=NLU.Yes(m.$0),a$9!=null&&a$9.$==1&&(a$10=AnonResponse("addUser",a$9.$0),a$10!=null&&a$10.$==1&&(a$11=Str(a$10.$0[1]),a$11!=null&&a$11.$==1&&(m.$1.$==0&&($4=a$11.$0,true)))))?Concurrency.Start((b$1=null,Concurrency.Delay(function()
   {
    sayRandom(CUI.waitAddPhrases(),"user");
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:444166523",[$4]),function(a$30)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:1546184882",[$4]),function(a$30)
    {
     return a$30==null?(say((function($16)
     {
@@ -1658,7 +1694,7 @@
    };
   }(Global.id))($5)):m.$==1&&(($7=AnonAssert(m.$0),$7!=null&&$7.$==1)&&m.$1.$==0)?say("Could you introduce yourself so we can get started?"):m.$==1&&(a$15=Assert(m.$0),a$15!=null&&a$15.$==1&&(a$16=NLU.Intent$1("hello",a$15.$0),a$16!=null&&a$16.$==1&&(a$16.$0[0]==null&&(a$17=NLU.Entity1Of1("contact",a$16.$0[1]),a$17!=null&&a$17.$==1&&(m.$1.$==0&&($8=a$17.$0,true))))))?Concurrency.Start((b$2=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:2060317512",[$8.get_Value()]),function(a$30)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1323481165",[$8.get_Value()]),function(a$30)
    {
     return a$30==null?(say((function($16)
     {
@@ -1861,6 +1897,25 @@
    return Concurrency.Zero();
   })),null)):ClientExtensions["Terminal.Echo'"](Client.CUI().Term,text);
  };
+ Client.initAvatar=function()
+ {
+  var sdk,web;
+  Global.SDK.applicationId="4277115329081938617";
+  sdk=new Global.SDKConnection();
+  web=new Global.WebAvatar();
+  web.version=8.5;
+  web.connection=sdk;
+  web.avatar="22225225";
+  web.voice="cmu-slt";
+  web.voiceMod="default";
+  web.nativeVoice=true;
+  web.nativeVoiceName="Microsoft David Desktop - English (United States)";
+  web.width=300;
+  web.createBox();
+  web.addMessage("Welcome my name is Lerna. Nice to meet you. What would you like to do?");
+  web.processMessages();
+  Client.debug(web);
+ };
  Client.initSpeech=function()
  {
   var voices;
@@ -2018,7 +2073,7 @@
    var $1,$2,$3,$4,a,a$1,a$2,a$3,u,b;
    Client.set_CUI(CUI$1.New(Client.CUI().Voice,Client.CUI().Mic,term,Client.CUI().Caption));
    Unchecked.Equals(Client.CUI().Mic,null)?Client.initMic(_main):void 0;
-   Unchecked.Equals(Client.CUI().Voice,null)?Client.initSpeech():void 0;
+   Unchecked.Equals(Client.CUI().Voice,null)?(Client.initSpeech(),Client.initAvatar()):void 0;
    Client.ClientState().$===0?Client.set_ClientState(ClientState.ClientReady):void 0;
    return($1=Text.Blank(command),$1!=null&&$1.$==1)?Client["say'"]("Tell me what you want me to do or ask me a question."):($2=Text.Debug(command),$2!=null&&$2.$==1)?(Client.debug((function($5)
    {
@@ -2077,7 +2132,7 @@
     {
      return main($1,$2);
     };
-   },(r={},r.name="Main",r.greetings="Welcome to Selma. Enter 'hello' or 'hello my name is...(you) to initialize speech recognition, or enter help for more assistance.",r.prompt=">",r)]
+   },(r={},r.name="Main",r.greetings="Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech recognition, or enter help for more assistance.",r.prompt=">",r)]
   });
  };
  Lerna$Web_GeneratedPrintf.p$8=function($1)
