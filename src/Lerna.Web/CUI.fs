@@ -19,12 +19,12 @@ module CUI =
 
     let helloPhrases = [
         "Welcome!"
-        "Welcome, my name is Selma."
-        "Welcome to Selma. How can I help?"
-        "Hello this is Selma, how can I help?"
-        "Hello, I am Selma. How can I help?"
-        "Hello, I am Selma. How may I help you now?"
-        "I'm Selma. Tell me your name so we can get started."
+        "Welcome, my name is Lerna."
+        "Welcome to Lerna. How can I help?"
+        "Hello this is Lerna, how can I help?"
+        "Hello, I am Lerna. How can I help?"
+        "Hello, I am Lerna. How may I help you now?"
+        "I'm Lerna. Tell me your name so we can get started."
     ]
 
     let helloUserPhrases = [

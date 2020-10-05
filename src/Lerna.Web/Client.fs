@@ -190,5 +190,5 @@ module Client =
         Interpreter(main', (main, mainOpt))
     
     let run() =        
-        Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore 
+        CUI <- { CUI with Term = Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) }
         Doc.Empty

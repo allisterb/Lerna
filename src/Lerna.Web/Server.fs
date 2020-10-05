@@ -17,9 +17,9 @@ module Server =
     let private pgdb =
         Sql.host (Api.Config("PGSQL"))
         |> Sql.port 5432
-        |> Sql.username "smapp"
-        |> Sql.password "smapp"
-        |> Sql.database "smapp"
+        |> Sql.username "lerna"
+        |> Sql.password "lerna"
+        |> Sql.database "lerna"
         |> Sql.sslMode SslMode.Prefer
         |> Sql.config "Pooling=true"
         |> Sql.formatConnectionString
@@ -31,7 +31,7 @@ module Server =
     [<Rpc>]
     let getUser(user:string) : Async<User option> = 
         pgdb
-        |> Sql.query "SELECT * FROM selma_user WHERE user_name=@u"
+        |> Sql.query "SELECT * FROM lerna_user WHERE user_name=@u"
         |> Sql.parameters ["u", Sql.string user]
         |> Sql.executeAsync (fun read -> {
             Name =  read.string("user_name")
@@ -45,7 +45,7 @@ module Server =
     [<Rpc>]
     let addUser (user:string) : Async<unit Option> =
         pgdb
-        |> Sql.query "INSERT INTO public.selma_user(user_name, last_logged_in) VALUES (@u, @d);"
+        |> Sql.query "INSERT INTO public.lerna_user(user_name, last_logged_in) VALUES (@u, @d);"
         |> Sql.parameters [("u", Sql.string user); ("d", Sql.timestamp (DateTime.Now))]
         |> Sql.executeNonQueryAsync
         |> Async.map(
@@ -56,7 +56,7 @@ module Server =
     [<Rpc>]
     let updateUserLastLogin (user:string) : Async<unit option> =
         pgdb
-        |> Sql.query "UPDATE public.selma_user SET last_logged_in=@d WHERE user_name=@u;"
+        |> Sql.query "UPDATE public.lerna_user SET last_logged_in=@d WHERE user_name=@u;"
         |> Sql.parameters [("u", Sql.string user); ("d", Sql.timestamp (DateTime.Now))]
         |> Sql.executeNonQueryAsync
         |> Async.map(

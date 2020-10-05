@@ -19,6 +19,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lerna.NLU.Wit.Web", "Lerna.NLU.Wit.Web\Lerna.NLU.Wit.Web.csproj", "{F5B1E856-FF3A-4093-B3C5-80474FC0117E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{F1436862-5B17-4E7D-BF7E-903335AE2E75}"
+	ProjectSection(SolutionItems) = preProject
+		..\scripts\SQL\DDL_CREATE_DB_lerna.sql = ..\scripts\SQL\DDL_CREATE_DB_lerna.sql
+		..\scripts\SQL\DDL_CREATE_SEQUENCE_lerna_user__id.sql = ..\scripts\SQL\DDL_CREATE_SEQUENCE_lerna_user__id.sql
+		..\scripts\SQL\DDL_CREATE_TABLE_lerna.sql = ..\scripts\SQL\DDL_CREATE_TABLE_lerna.sql
+		..\scripts\SQL\DDL_CREATE_USER_lerna.sql = ..\scripts\SQL\DDL_CREATE_USER_lerna.sql
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NLU", "NLU", "{213BBD4B-143F-4BE2-90F2-61388962C218}"
 EndProject
