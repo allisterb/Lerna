@@ -148,27 +148,11 @@ module Main =
                     say <| sprintf "Sorry I was not able to add the user %s to the system." u
             } |> Async.Start
 
-        (* Symptom journal functions *)
-        
-        let addSymptom s l m = 
-            async { 
-                do sayRandom waitAddPhrases "symptom entry"
-                match! Server.addSymptomJournalEntry (user().Name) s l m with 
-                | Some _ -> 
-                    say <| sprintf "OK I added that %s symptom to your journal." s 
-                | None _ -> 
-                    say <| sprintf "Sorry I wasn't able to add that symptom to your journal. Could you try again?"
-            } |> Async.Start 
-
-        let getSymptomJournal u =  
-            async {
-                do sayRandom waitRetrievePhrases "symptom journal"
-                return! Server.getSymptomJournal u 
-        }
             
         (* Interpreter logic begins here *)
         match utterances |> Seq.take (if utterances.Count >= 5 then 5 else utterances.Count) |> List.ofSeq with
 
+        
         (* Hello *)
         
         | Start(AnonAssert(Intent "hello" (_, None)))::[] ->  
@@ -201,25 +185,6 @@ module Main =
         | No(Response "switchUser" (_, Str user))::[] -> 
             say <| sprintf "Ok I did not switch to user %s." user
         
-        (* Symptoms *)
-
-        | Assert(Intent "symptom" (_, Entity1OfAny "symptom_name" s))::[] ->
-            async {
-                say "Ok I'll add that entry to your symptom journal"
-                addSymptom s.Value None (None)
-                let! j = getSymptomJournal (user().Name)
-                //say <| sprintf "I see this is the 3rd time today you've had pain %s" (user())
-                ask "painVideo" ""
-            } |> Async.Start
-
-        | Yes(Response "painVideo"(_, _))::[] -> cui.EchoHtml'("""<iframe width="560" height="315" src="https://www.youtube.com/embed/SkAqOditKN0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>""")
-            
-        (* Meds *)
-
-        | Assert(Intent "medjournal" (_, Some en))::[] ->
-            say "ok I added that entry to your medication journal."
-            say "You should be careful not to take too many painkillers over a short period of time."
-
         | _ -> 
             popu()
             debug "Main interpreter did not understand utterance."

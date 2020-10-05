@@ -6,6 +6,34 @@ open WebSharper
 
 [<JavaScript>]
 module Models =
+    type NLUResponse = {
+        ``type``: string
+        msg: string
+        action: string
+        traits: Map<string, Trait list>
+        entities: Map<string, Trait list>
+        confidence:double
+    } 
+    and Trait = {
+        id:string
+        value:string
+        confidence:float32
+    }
+    and Entity = {
+        id: string
+        name: string
+        role: string
+        start: int
+        ``end``: int
+        body: string
+        confidence: float
+        entities: obj[]
+        suggested: bool
+        value:string
+        ``type``: string 
+    }
+    
+   
     type Identifier =
         | Id of uint64
         | Uuid of Guid
@@ -35,9 +63,9 @@ module Models =
         Address: Address option 
     }
 
-    type SymptomEntry = {
+    type StudyJournalEntry = {
         UserName: string
-        Date: DateTime
-        Magnitude: int option
-        Location: string option
+        Date: DateTime option
+        Subject: string option
+        Duration: int option
     }    

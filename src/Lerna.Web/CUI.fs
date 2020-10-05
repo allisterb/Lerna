@@ -28,10 +28,11 @@ module CUI =
     ]
 
     let helloUserPhrases = [
-        "Hi $0, welcome back."
+        "Hello $0, welcome back."
         "Welcome $0, nice to see you again."
         "Hello $0."
         "Good to see you $0."
+        "Hello $0, nice to see you."
     ]
 
     let helpPhrases = [
@@ -49,6 +50,7 @@ module CUI =
         "Ok, let me add that $0 for you"
         "Please wait while I add that $0 for you."
         "Wait while I add that $0."
+        "I'll add that $0 now."
     ]
         
     type MicState = MicNotInitialized | MicConnecting | MicDisconnected | MicAudioStart | MicAudioEnd | MicReady | MicError of string | MicResult of obj * obj

@@ -41,7 +41,7 @@ module ClientExtensions =
     let mdbold = RegExp("/^\> (.*$)/", "gim")
     
     [<Literal>]
-    let s = """function parseMarkdown(markdownText) {
+    let scriptmd = """function parseMarkdown(markdownText) {
         const htmlText = markdownText
         	.replace(/^### (.*$)/gim, '<h3>$1</h3>')
         	.replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -56,9 +56,7 @@ module ClientExtensions =
         return htmlText.trim()
     }
     """
-    
-    
-
+   
 [<JavaScript>]
 type _Html =
    | Elem of string * _Html list

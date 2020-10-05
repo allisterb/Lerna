@@ -65,46 +65,31 @@ module Server =
             | Error exn -> errex "Error updating user {0} last login time in database." exn [user]; None)
 
     [<Rpc>]
-    let addSymptomJournalEntry (user:string) (name:string) (location:string option) (magnitude:int option) : Async<unit Option> =
+    let addStudyJournalEntry (user:string) (date:DateTime option) (subject:string option) (duration:int option) : Async<unit Option> =
         pgdb
-        |> Sql.query "INSERT INTO public.symptom_journal(user_name, name, date, magnitude, location) VALUES (@u, @n, @d, @m, @l);"
+        |> Sql.query "INSERT INTO public.study_journal(user_name, date, subject, duration) VALUES (@u, @dt, @s, @d);"
         |> Sql.parameters [
             "u", Sql.string user
-            "n", Sql.string name
-            "d", Sql.timestamp (DateTime.Now) 
-            "m", if magnitude.IsSome then Sql.int(magnitude.Value) else Sql.dbnull
-            "l", if location.IsSome then Sql.string (location.Value) else Sql.dbnull
+            "dt", Sql.timestampOrNone date
+            "s", Sql.stringOrNone subject
+            "d", Sql.intOrNone duration
         ]
         |> Sql.executeNonQueryAsync
         |> Async.map(
             function 
-            | Ok n -> (if n > 0 then infof "Added symptom {0} for user {1} to database." [name;user]; Some() else None) 
-            | Error exn -> errex "Did not add symptom {0} for user {1} to database" exn [name;user]; None)
+            | Ok n -> (if n > 0 then infof "Added study journal entry {0} for user {1} to database." [subject;user]; Some() else None) 
+            | Error exn -> errex "Did not add study journal entry {0} for user {1} to database" exn [subject;user]; None)
     
     [<Rpc>]
-    let getSymptomJournal(userName:string) : Async<SymptomEntry list option> = 
+    let getStudyJournalEntry(userName:string) : Async<StudyJournalEntry list option> = 
         pgdb
-        |> Sql.query "SELECT * FROM symptom_journal WHERE user_name=@u"
+        |> Sql.query "SELECT * FROM study_journal WHERE user_name=@u"
         |> Sql.parameters ["u", Sql.string userName]
         |> Sql.executeAsync (fun read -> {
             UserName =  read.string("user_name")
-            Date = (read.timestamp "date").ToDateTime() 
-            Magnitude = read.intOrNone "magnitude"  
-            Location = read.stringOrNone "location"
+            Date = read.timestampOrNone "date" |> Option.map(fun d -> d.ToDateTime())
+            Subject = read.stringOrNone "subject"  
+            Duration = read.intOrNone "duration"
         }) 
         |> Async.map(function | Ok j  -> Some j | Error exn -> err(exn.Message); None)
-
-    [<Rpc>]
-    let GetStudents() : Async<Result<Student list, string>> = 
-        pgdb
-        |> Sql.query "SELECT * FROM patient"
-        |> Sql.executeAsync (fun read ->
-        {
-            Id =  read.string("Id") |> Models.String
-            Sex = Male
-            Name = None
-            BirthDate = None
-            Address = None
-        }) 
-        |> Async.map(function | Ok r -> Ok r | Error exn -> Error(exn.Message))
     

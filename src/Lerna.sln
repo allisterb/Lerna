@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{471A2D
 	ProjectSection(SolutionItems) = preProject
 		..\deploy\oc-create-app.cmd = ..\deploy\oc-create-app.cmd
 		..\deploy\oc-deploy-build.cmd = ..\deploy\oc-deploy-build.cmd
+		..\deploy\oc-port-forward.cmd = ..\deploy\oc-port-forward.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{9487FAAB-6BBF-462C-9BBC-8206A1C9A1F3}"
@@ -21,8 +22,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{F1436862-5B17-4E7D-BF7E-903335AE2E75}"
 	ProjectSection(SolutionItems) = preProject
 		..\scripts\SQL\DDL_CREATE_DB_lerna.sql = ..\scripts\SQL\DDL_CREATE_DB_lerna.sql
-		..\scripts\SQL\DDL_CREATE_SEQUENCE_lerna_user__id.sql = ..\scripts\SQL\DDL_CREATE_SEQUENCE_lerna_user__id.sql
-		..\scripts\SQL\DDL_CREATE_TABLE_lerna.sql = ..\scripts\SQL\DDL_CREATE_TABLE_lerna.sql
+		..\scripts\SQL\DDL_CREATE_TABLE_lerna.study_journal.sql = ..\scripts\SQL\DDL_CREATE_TABLE_lerna.study_journal.sql
+		..\scripts\SQL\DDL_CREATE_TABLE_lerna_user.sql = ..\scripts\SQL\DDL_CREATE_TABLE_lerna_user.sql
 		..\scripts\SQL\DDL_CREATE_USER_lerna.sql = ..\scripts\SQL\DDL_CREATE_USER_lerna.sql
 	EndProjectSection
 EndProject

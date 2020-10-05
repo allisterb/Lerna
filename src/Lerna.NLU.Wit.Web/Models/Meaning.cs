@@ -16,6 +16,6 @@ namespace Lerna.NLU.Wit
     
         public Dictionary<string, Entity[]> entities { get; set; }
         
-        public Dictionary<string, Trait[]> traits { get; set; }
+        //public Dictionary<string, Trait[]> traits { get; set; }
     }
 }

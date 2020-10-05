@@ -84,7 +84,7 @@ module Client =
         say' text
         
     let sayVoices() =
-        let voices = Window.SpeechSynthesis.GetVoices() |> toArray    
+        let voices = synth.GetVoices() |> toArray    
         sprintf "There are currently %i voices installed on this computer or device." voices.Length |> say'
         voices |> Array.iteri (fun i v -> sprintf "Voice %i. Name: %s, Local: %A." i v.Name v.LocalService |> say')
 
@@ -128,7 +128,7 @@ module Client =
                 | _ -> None
             let _trait = 
                 match e with
-                | Voice.Trait' t -> Some t
+                | Voice.Trait' t -> Some [t]
                 | _ -> None
             let entity = 
                 match e with
@@ -178,7 +178,7 @@ module Client =
                             NLU.Text.getUtterance command (fun meaning ->
                                 match meaning with
                                 | Text.HasUtterance m -> 
-                                    debug <| sprintf "Text: %A %A %A" m.Intent m.Trait m.Entities
+                                    debug <| sprintf "Text: Intent: %A, Traits: %A, Entities: %A" m.Intent m.Traits m.Entities
                                     m |> push |> Main.update CUI Props Questions Responses
                                 | _ -> 
                                     debug "Text: Did not receive a meaning from the server." 
@@ -190,7 +190,7 @@ module Client =
         let mainOpt =
             Options(
                 Name="Main", 
-                Greetings = "Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech recognition, or enter help for more assistance.",
+                Greetings = "Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech.",
                 Prompt =">"
             )       
         Interpreter(main', (main, mainOpt))

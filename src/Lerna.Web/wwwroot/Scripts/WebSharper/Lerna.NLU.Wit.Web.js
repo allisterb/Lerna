@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,WebSharper,Obj,Lerna,NLU,Wit,ConverseResponse,Entity,Intent,Meaning,Trait,WitApiResponse,WitApi,IntelliFactory,Runtime,$;
+ var Global,WebSharper,Obj,Lerna,NLU,Wit,ConverseResponse,Entity,Intent,Meaning,WitApiResponse,WitApi,IntelliFactory,Runtime,$;
  Global=self;
  WebSharper=Global.WebSharper;
  Obj=WebSharper&&WebSharper.Obj;
@@ -12,7 +12,6 @@
  Entity=Wit.Entity=Wit.Entity||{};
  Intent=Wit.Intent=Wit.Intent||{};
  Meaning=Wit.Meaning=Wit.Meaning||{};
- Trait=Wit.Trait=Wit.Trait||{};
  WitApiResponse=Wit.WitApiResponse=Wit.WitApiResponse||{};
  WitApi=Wit.WitApi=Wit.WitApi||{};
  IntelliFactory=Global.IntelliFactory;
@@ -220,14 +219,6 @@
   this.set_confidence(_confidence);
  },Intent);
  Meaning=Wit.Meaning=Runtime.Class({
-  set_traits:function(value)
-  {
-   this.$traits=value;
-  },
-  get_traits:function()
-  {
-   return this.$traits;
-  },
   set_entities:function(value)
   {
    this.$entities=value;
@@ -257,49 +248,12 @@
    this.set_text(null);
    this.set_intents(null);
    this.set_entities(null);
-   this.set_traits(null);
   }
  },Obj,Meaning);
  Meaning.New=Runtime.Ctor(function()
  {
   this.$init();
  },Meaning);
- Trait=Wit.Trait=Runtime.Class({
-  set_confidence:function(value)
-  {
-   this.$confidence=value;
-  },
-  get_confidence:function()
-  {
-   return this.$confidence;
-  },
-  set_value:function(value)
-  {
-   this.$value=value;
-  },
-  get_value:function()
-  {
-   return this.$value;
-  },
-  set_id:function(value)
-  {
-   this.$id=value;
-  },
-  get_id:function()
-  {
-   return this.$id;
-  },
-  $init:function()
-  {
-   this.set_id(null);
-   this.set_value(null);
-   this.set_confidence(0);
-  }
- },Obj,Trait);
- Trait.New=Runtime.Ctor(function()
- {
-  this.$init();
- },Trait);
  WitApiResponse=Wit.WitApiResponse=Runtime.Class({
   set_code:function(value)
   {
