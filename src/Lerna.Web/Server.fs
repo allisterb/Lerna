@@ -95,7 +95,7 @@ module Server =
         |> Async.map(function | Ok j  -> Some j | Error exn -> err(exn.Message); None)
 
     [<Rpc>]
-    let GetPatients() : Async<Result<Patient list, string>> = 
+    let GetStudents() : Async<Result<Student list, string>> = 
         pgdb
         |> Sql.query "SELECT * FROM patient"
         |> Sql.executeAsync (fun read ->

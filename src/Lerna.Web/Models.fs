@@ -28,7 +28,7 @@ module Models =
     with 
         override x.ToString() = x.Name
 
-    type Patient = {
+    type Student = {
         Id: Identifier    
         Sex: Sex 
         Name: Name option

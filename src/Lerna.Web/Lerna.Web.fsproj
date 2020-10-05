@@ -5,6 +5,7 @@
     <UserSecretsId>f3ed0dc7-f978-44ae-8add-9e5bfcf8fa8a</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Models.fs" />
     <Compile Include="ClientExtensions.fs" />
     <Compile Include="Bootstrap.fs" />
     <Compile Include="NLU.fs" />
@@ -34,7 +35,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Lerna.Base.Fs\Lerna.Base.Fs.fsproj" />
     <ProjectReference Include="..\Lerna.Base\Lerna.Base.csproj" />
-    <ProjectReference Include="..\Lerna.Core\Lerna.Core.fsproj" />
     <ProjectReference Include="..\Lerna.NLU.Wit.Web\Lerna.NLU.Wit.Web.csproj" />
   </ItemGroup>
   <ItemGroup>

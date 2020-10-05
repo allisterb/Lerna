@@ -23,6 +23,22 @@ module Client =
         Voice = None
         Mic = None
         Term = Unchecked.defaultof<Terminal>
+        Avatar = 
+            SDK.ApplicationId <- "4277115329081938617"
+            let sdk = new SDKConnection()
+            let web = new WebAvatar()
+            web.Version <- 8.5
+            web.Connection <- sdk
+            web.Avatar <- "22225225"
+            web.Voice <- "cmu-slt";
+            web.VoiceMod <- "default";
+            web.NativeVoice <- true;
+            web.NativeVoiceName <- "Microsoft David Desktop - English (United States)";
+            web.Width <- 300;
+            web.CreateBox();
+            web.AddMessage("")
+            web.ProcessMessages(0)
+            web
         Caption = false
     }
     let mutable MicState = MicNotInitialized
@@ -51,44 +67,15 @@ module Client =
     
     let initSpeech() =
         let voices = synth.GetVoices() |> toArray         
-        do voices |> Array.iter(fun v-> 
-            if CUI.Voice = None && (v.Name.Contains "Microsoft Zira" || v.Name.ToLower().Contains "female") then
-                CUI <- { CUI with Voice = Some v }; debug <| sprintf "Using voice %s." CUI.Voice.Value.Name
-            )
-        if CUI.Voice = None && voices.Length > 0 then
+        if voices.Length > 0 then
             let v = voices |> Array.find (fun v -> v.Default) in 
             CUI <- { CUI with Voice = Some v }; debug <| sprintf "Using default voice %s." CUI.Voice.Value.Name 
-        else if CUI.Voice = None then 
-            echo "No speech synthesis voice is available. Install speech synthesis on this device or computer to use the voice output feature of Selma."
-       
-    let initAvatar() =
-        SDK.ApplicationId <- "4277115329081938617";
-        let sdk = new SDKConnection();
-        let web = new WebAvatar();
-        web.Version <- 8.5
-        web.Connection <- sdk;
-        web.Avatar <- "22225225";
-        web.Voice <- "cmu-slt";
-        web.VoiceMod <- "default";
-        web.NativeVoice <- true;
-        web.NativeVoiceName <- "Microsoft David Desktop - English (United States)";
-        web.Width <- 300;
-        web.CreateBox();
-        web.AddMessage("Welcome my name is Lerna. Nice to meet you. What would you like to do?");
-        web.ProcessMessages();
-        debug web
+            CUI.Avatar.NativeVoice <- true
+            CUI.Avatar.NativeVoiceName <- v.Name
+        else  
+            echo "No speech synthesis voice is available."
 
-    let say' text =        
-        match CUI.Voice with
-        | None -> 
-            CUI.Term.Echo' text
-        | Some v ->
-            async { 
-                let u = new SpeechSynthesisUtterance(text)
-                u.Voice <- v
-                Window.SpeechSynthesis.Speak(u)
-                do if CUI.Caption then CUI.Term.Echo' text
-            } |> Async.Start
+    let say' text = CUI.Say text                
 
     let say text =
         Responses.Push text
@@ -155,9 +142,7 @@ module Client =
         let main (term:Terminal) (command:string)  =
             CUI <- { CUI with Term = term }
             do if CUI.Mic = None then initMic main'
-            do if CUI.Voice = None then 
-                initSpeech ()
-                initAvatar()
+            do if CUI.Voice = None then initSpeech ()
             do if ClientState = ClientNotInitialzed then ClientState <- ClientReady
             match command with
             (* Quick commands *)

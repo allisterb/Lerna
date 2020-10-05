@@ -7,6 +7,7 @@ open WebSharper
 open SMApp.JQueryTerminal
 open SMApp.WebSpeech
 open SMApp.Microphone
+open SMApp.BotLibre
 
 [<AutoOpen;JavaScript>]
 module CUI =
@@ -62,9 +63,10 @@ module CUI =
         member x.Options = let v, i, o = x.Unwrap in o
 
     type CUI = {
-         Voice:SpeechSynthesisVoice option
+         Voice: SpeechSynthesisVoice option
          Mic: Mic option
          Term: Terminal
+         Avatar: WebAvatar
          Caption: bool
      }
      with
@@ -76,17 +78,12 @@ module CUI =
  
          member x.Debug loc m = debug loc m
  
-         member x.Say text = 
-             match x.Voice with
-             | None -> x.Echo' text
-             | Some v ->
-                 async { 
-                     let u = new SpeechSynthesisUtterance(text)
-                     u.Voice <- v
-                     Window.SpeechSynthesis.Speak(u)
-                     do if x.Caption then x.Echo' text
-                 } |> Async.Start
-                 
+         member x.Say text =
+            async {
+                x.Avatar.AddMessage(text)
+                x.Avatar.ProcessMessages(0)
+            } |> Async.Start
+
          member x.sayRandom phrases t = x.Say <| getRandomPhrase phrases t
      
          member x.Wait (f:unit -> unit) =
