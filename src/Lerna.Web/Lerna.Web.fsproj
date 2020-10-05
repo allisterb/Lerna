@@ -35,6 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Lerna.Base.Fs\Lerna.Base.Fs.fsproj" />
     <ProjectReference Include="..\Lerna.Base\Lerna.Base.csproj" />
+    <ProjectReference Include="..\Lerna.NLU.QnAMaker\Lerna.NLU.QnAMaker.fsproj" />
     <ProjectReference Include="..\Lerna.NLU.Wit.Web\Lerna.NLU.Wit.Web.csproj" />
   </ItemGroup>
   <ItemGroup>

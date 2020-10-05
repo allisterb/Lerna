@@ -15,6 +15,8 @@ open SMApp.WebSpeech
 open SMApp.Microphone
 open SMApp.BotLibre
 
+open Lerna.NLU
+
 [<JavaScript>]
 module Client =
    (* CUI state *)
@@ -162,6 +164,11 @@ module Client =
                     | Text.QuickHelp m 
                     | Text.QuickYes m
                     | Text.QuickNo m -> 
+                        async {
+                            let! r = QnAMaker.getAnswer "What is an element?" 
+                            debug r
+                        } |> Async.Start
+                        
                         debug <| sprintf "Quick Text: %A." m
                         m |> push |> Main.update CUI Props Questions Responses
                         ClientState <- ClientReady

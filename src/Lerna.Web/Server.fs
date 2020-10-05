@@ -16,7 +16,7 @@ open Lerna.Models
 module Server =        
     let private pgdb =
         Sql.host (Api.Config("PGSQL"))
-        |> Sql.port 5432
+        |> Sql.port 5433
         |> Sql.username "lerna"
         |> Sql.password "lerna"
         |> Sql.database "lerna"

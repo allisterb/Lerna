@@ -6,7 +6,6 @@ open WebSharper
 
 [<JavaScript>]
 module Models =
-
     type Identifier =
         | Id of uint64
         | Uuid of Guid
