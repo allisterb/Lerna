@@ -1,0 +1,2 @@
+@echo off
+curl -X POST https://lerna.azurewebsites.net/qnamaker/knowledgebases/ac24190a-9a70-4117-8b6d-72a3a1b501b7/generateAnswer -H "Authorization: EndpointKey %QNA_ENDPOINT_KEY%" -H "Content-type: application/json; charset=utf-8" -d "{'question':'What is the periodic table'}" "{'question':'What is the periodic table'}"

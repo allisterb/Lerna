@@ -166,9 +166,8 @@ module Client =
                     | Text.QuickNo m -> 
                         async {
                             let! r = QnAMaker.getAnswer "What is an element?" 
-                            debug r
+                            debug r.answers.[0].answer
                         } |> Async.Start
-                        
                         debug <| sprintf "Quick Text: %A." m
                         m |> push |> Main.update CUI Props Questions Responses
                         ClientState <- ClientReady

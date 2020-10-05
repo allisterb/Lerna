@@ -44,9 +44,10 @@ module Main =
         let haveProp k = props.ContainsKey k
         let addProp k v = props.Add(k, v)
         let deleteProp k = props.Remove k |> ignore
-        let strProp k = props.[k] :?> string
-        let user() = props.["user"] :?> User
-        let popc() = utterances.Pop() |> ignore
+        let prop k :'a = props.[k] :?> 'a
+        let user() :User = prop "user"
+        
+        let popu() = utterances.Pop() |> ignore
         let popq() = questions.Pop() |> ignore
         let pushq (n:string) = 
             match getQuestion n with
@@ -73,14 +74,14 @@ module Main =
         let (|Assert|_|) :Utterance -> Utterance option =
             function
             | PropSet "user" m when questions.Count = 0 -> 
-                popc()
+                popu()
                 Some m
             | _ -> None
 
         let (|Response|_|) (n:string) :Utterance -> (Utterance * obj option) option =
             function
             | PropSet "user" m when haveQuestion n && questions.Count > 0  && questions.Peek().Name = n -> 
-                popc()
+                popu()
                 popq()
                 if haveProp n then
                     let d = props.[n]
@@ -92,7 +93,7 @@ module Main =
         let (|AnonResponse|_|) (n:string) :Utterance -> (Utterance * obj option) option =
             function
             | PropNotSet "user" m when haveQuestion n && questions.Count > 0  && questions.Peek().Name = n -> 
-                popc()
+                popu()
                 popq()
                 if haveProp n then
                     let d = props.[n]
@@ -104,7 +105,7 @@ module Main =
         let (|AnonAssert|_|) :Utterance -> Utterance option =
             function
             | PropNotSet "user" m when questions.Count = 0 -> 
-                popc()
+                popu()
                 Some m
             | _ -> None
 
@@ -220,7 +221,7 @@ module Main =
             say "You should be careful not to take too many painkillers over a short period of time."
 
         | _ -> 
-            popc()
+            popu()
             debug "Main interpreter did not understand utterance."
             say "Sorry I didn't understand what you meant."
             if questions.Count > 0 then 

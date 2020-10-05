@@ -10,7 +10,7 @@ open Models
 
 [<JavaScript>]
 module QnAMaker =    
-    let getAnswer q :Async<string> =
+    let getAnswer q :Async<ITSAnswers> =
         Async.FromContinuations <| fun (ok, ko, _) -> 
             JQuery.Ajax(
                 JQuery.AjaxSettings(
@@ -20,8 +20,8 @@ module QnAMaker =
                     ContentType = Union2Of2("application/json"),
                     DataType = JQuery.DataType.Json,
                     Data = JSON.Stringify({question = q}),
-                    Success = Action<obj, string, JqXHR>(fun result s _ -> ok (result :?> string)),
-                    Error = Action<JqXHR, string, string>(fun jqxhr _ _ -> ko (System.Exception(jqxhr.ResponseText)))
+                    Success = Action<obj, string, JqXHR>(fun result s _ -> ok (result :?> ITSAnswers)),
+                    Error = Action<JqXHR, string, string>(fun jqxhr _ _ -> ko (exn jqxhr.ResponseText))
             )) |> ignore
            
                

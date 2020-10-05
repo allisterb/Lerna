@@ -80,6 +80,8 @@ module CUI =
  
          member x.Say text =
             async {
+                let synth = Window.SpeechSynthesis
+                do if synth.Speaking then synth.Cancel()
                 x.Avatar.AddMessage(text)
                 x.Avatar.ProcessMessages(0)
             } |> Async.Start

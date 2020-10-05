@@ -33,6 +33,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{AFFDE98A-91D2-4F42-8A7D-2612D821A917}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shell", "Shell", "{0F79F0BC-CB01-445B-A50A-3733388F4463}"
+	ProjectSection(SolutionItems) = preProject
+		question.cmd = question.cmd
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

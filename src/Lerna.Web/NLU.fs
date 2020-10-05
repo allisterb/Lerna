@@ -217,9 +217,9 @@ module NLU =
                 member x.Role = let (_, _, r, _) = x.Unwrap in r
                 member x.Value = let (_, _, _, v) = x.Unwrap in v
 
-        let private witapi = new WitApi("4Y2BLQY5TWLIN7HFIV264S53MY4PCUAT")
+        let private witapi = new WitApi("MROJG5PKG6G7Q4SVXN7HSIGSIZZ5DI6W")
          
-        let private entity_types = ["wit$contact:contact"; "wit$datetime:datetime"; "symptom_name:symptom_name"]
+        let private entity_types = ["wit$contact:contact"; "wit$datetime:datetime"; "subject:subject"]
 
         let getUtterance sentence m =
             witapi.getMeaning(sentence, 

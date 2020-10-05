@@ -1345,8 +1345,8 @@
  SC$3.$cctor=function()
  {
   SC$3.$cctor=Global.ignore;
-  SC$3.witapi=new WitApi.New("4Y2BLQY5TWLIN7HFIV264S53MY4PCUAT");
-  SC$3.entity_types=List.ofArray(["wit$contact:contact","wit$datetime:datetime","symptom_name:symptom_name"]);
+  SC$3.witapi=new WitApi.New("MROJG5PKG6G7Q4SVXN7HSIGSIZZ5DI6W");
+  SC$3.entity_types=List.ofArray(["wit$contact:contact","wit$datetime:datetime","subject:subject"]);
   SC$3.intentConfidenceThreshold=0.85;
   SC$3.entityConfidenceThreshold=0.85;
  };
@@ -1439,6 +1439,7 @@
    $this=this;
    Concurrency.Start((b=null,Concurrency.Delay(function()
    {
+    Global.speechSynthesis.speaking?Global.speechSynthesis.cancel():void 0;
     $this.Avatar.addMessage(text);
     $this.Avatar.processMessages(0);
     return Concurrency.Zero();
@@ -1552,11 +1553,15 @@
   {
    props.Remove(k);
   }
+  function prop(k)
+  {
+   return props.get_Item(k);
+  }
   function user()
   {
-   return props.get_Item("user");
+   return prop("user");
   }
-  function popc()
+  function popu()
   {
    utterances.shift();
   }
@@ -1606,7 +1611,7 @@
   function Assert(a$30)
   {
    var $16,a$31;
-   return(a$31=PropSet("user",a$30),a$31!=null&&a$31.$==1&&(questions.length===0&&($16=a$31.$0,true)))?(popc(),{
+   return(a$31=PropSet("user",a$30),a$31!=null&&a$31.$==1&&(questions.length===0&&($16=a$31.$0,true)))?(popu(),{
     $:1,
     $0:$16
    }):null;
@@ -1614,7 +1619,7 @@
   function Response(n,a$30)
   {
    var $16,a$31,d;
-   return(a$31=PropSet("user",a$30),a$31!=null&&a$31.$==1&&(Main.haveQuestion(n)&&questions.length>0&&questions[0].get_Name()===n&&($16=a$31.$0,true)))?(popc(),popq(),haveProp(n)?(d=props.get_Item(n),(deleteProp(n),{
+   return(a$31=PropSet("user",a$30),a$31!=null&&a$31.$==1&&(Main.haveQuestion(n)&&questions.length>0&&questions[0].get_Name()===n&&($16=a$31.$0,true)))?(popu(),popq(),haveProp(n)?(d=props.get_Item(n),(deleteProp(n),{
     $:1,
     $0:[$16,{
      $:1,
@@ -1628,7 +1633,7 @@
   function AnonResponse(n,a$30)
   {
    var $16,a$31,d;
-   return(a$31=PropNotSet("user",a$30),a$31!=null&&a$31.$==1&&(Main.haveQuestion(n)&&questions.length>0&&questions[0].get_Name()===n&&($16=a$31.$0,true)))?(popc(),popq(),haveProp(n)?(d=props.get_Item(n),(deleteProp(n),{
+   return(a$31=PropNotSet("user",a$30),a$31!=null&&a$31.$==1&&(Main.haveQuestion(n)&&questions.length>0&&questions[0].get_Name()===n&&($16=a$31.$0,true)))?(popu(),popq(),haveProp(n)?(d=props.get_Item(n),(deleteProp(n),{
     $:1,
     $0:[$16,{
      $:1,
@@ -1642,7 +1647,7 @@
   function AnonAssert(a$30)
   {
    var $16,a$31;
-   return(a$31=PropNotSet("user",a$30),a$31!=null&&a$31.$==1&&(questions.length===0&&($16=a$31.$0,true)))?(popc(),{
+   return(a$31=PropNotSet("user",a$30),a$31!=null&&a$31.$==1&&(questions.length===0&&($16=a$31.$0,true)))?(popu(),{
     $:1,
     $0:$16
    }):null;
@@ -1661,7 +1666,7 @@
    return Concurrency.Start((b$4=null,Concurrency.Delay(function()
    {
     sayRandom(CUI.waitAddPhrases(),"symptom entry");
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addSymptomJournalEntry:-1953773739",[user().Name,s,l,m$1]),function(a$30)
+    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addSymptomJournalEntry:-1913660547",[user().Name,s,l,m$1]),function(a$30)
     {
      return a$30==null?(say(function($16)
      {
@@ -1683,7 +1688,7 @@
    return Concurrency.Delay(function()
    {
     sayRandom(CUI.waitRetrievePhrases(),"symptom journal");
-    return(new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getSymptomJournal:1235798247",[u$1]);
+    return(new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getSymptomJournal:425696581",[u$1]);
    });
   }
   Main.debug((((Runtime.Curried3(function($16,$17,$18)
@@ -1696,7 +1701,7 @@
    $0:a$1.$0
   }:null),a!=null&&a.$==1&&(a$2=AnonAssert(a.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Intent$1("hello",a$2.$0),a$3!=null&&a$3.$==1&&(a$3.$0[1]==null&&m.$1.$==0))))?(props.Add("started",true),sayRandom(CUI.helloPhrases(),"")):m.$==1&&(a$4=AnonAssert(m.$0),a$4!=null&&a$4.$==1&&(a$5=NLU.Intent$1("hello",a$4.$0),a$5!=null&&a$5.$==1&&(a$5.$0[1]==null&&m.$1.$==0)))?say("Hello, tell me your name to get started."):m.$==1&&(a$6=AnonAssert(m.$0),a$6!=null&&a$6.$==1&&(a$7=NLU.Intent$1("hello",a$6.$0),a$7!=null&&a$7.$==1&&(a$8=NLU.Entity1Of1("contact",a$7.$0[1]),a$8!=null&&a$8.$==1&&(m.$1.$==0&&($3=a$8.$0,true)))))?(u=$3.get_Value(),sayRandom(CUI.waitRetrievePhrases(),"user name"),Concurrency.Start((b=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:1463996414",[u]),function(a$30)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1671365491",[u]),function(a$30)
    {
     var u$1;
     return a$30==null?(say((function($16)
@@ -1705,7 +1710,7 @@
      {
       return $16("I did not find a user with the name "+Utils.toSafe($17)+".");
      };
-    }(Global.id))(u)),ask("addUser",u),Concurrency.Zero()):(u$1=a$30.$0,Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:933988736",[u$1.Name]),function()
+    }(Global.id))(u)),ask("addUser",u),Concurrency.Zero()):(u$1=a$30.$0,Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:972331068",[u$1.Name]),function()
     {
      props.Add("user",u$1);
      sayRandom(CUI.helloUserPhrases(),(function($16)
@@ -1715,7 +1720,7 @@
        return $16(Utils.prettyPrint($17));
       };
      }(Global.id))(props.get_Item("user")));
-     return u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:73403299",[u$1.LastLoggedIn.$0]),function(a$31)
+     return u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:-1480351",[u$1.LastLoggedIn.$0]),function(a$31)
      {
       say((function($16)
       {
@@ -1731,7 +1736,7 @@
   })),null)):m.$==1&&(a$9=NLU.Yes(m.$0),a$9!=null&&a$9.$==1&&(a$10=AnonResponse("addUser",a$9.$0),a$10!=null&&a$10.$==1&&(a$11=Str(a$10.$0[1]),a$11!=null&&a$11.$==1&&(m.$1.$==0&&($4=a$11.$0,true)))))?Concurrency.Start((b$1=null,Concurrency.Delay(function()
   {
    sayRandom(CUI.waitAddPhrases(),"user");
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:933988736",[$4]),function(a$30)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:972331068",[$4]),function(a$30)
    {
     return a$30==null?(say((function($16)
     {
@@ -1755,7 +1760,7 @@
    };
   }(Global.id))($5)):m.$==1&&(($7=AnonAssert(m.$0),$7!=null&&$7.$==1)&&m.$1.$==0)?say("Could you introduce yourself so we can get started?"):m.$==1&&(a$15=Assert(m.$0),a$15!=null&&a$15.$==1&&(a$16=NLU.Intent$1("hello",a$15.$0),a$16!=null&&a$16.$==1&&(a$16.$0[0]==null&&(a$17=NLU.Entity1Of1("contact",a$16.$0[1]),a$17!=null&&a$17.$==1&&(m.$1.$==0&&($8=a$17.$0,true))))))?Concurrency.Start((b$2=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:1463996414",[$8.get_Value()]),function(a$30)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1671365491",[$8.get_Value()]),function(a$30)
    {
     return a$30==null?(say((function($16)
     {
@@ -1786,7 +1791,7 @@
     ask("painVideo","");
     return Concurrency.Zero();
    });
-  })),null):m.$==1&&(a$27=NLU.Yes(m.$0),a$27!=null&&a$27.$==1&&(($13=Response("painVideo",a$27.$0),$13!=null&&$13.$==1)&&m.$1.$==0))?cui["EchoHtml'"]("<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/SkAqOditKN0\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"):m.$==1&&(a$28=Assert(m.$0),a$28!=null&&a$28.$==1&&(a$29=NLU.Intent$1("medjournal",a$28.$0),a$29!=null&&a$29.$==1&&(($15=a$29.$0[1],$15!=null&&$15.$==1)&&(m.$1.$==0&&($14=a$29.$0[1].$0,true)))))?(say("ok I added that entry to your medication journal."),say("You should be careful not to take too many painkillers over a short period of time.")):(popc(),Main.debug("Main interpreter did not understand utterance."),say("Sorry I didn't understand what you meant."),questions.length>0?(q=Seq.nth(0,questions),haveProp(q.get_Name())?say(ClientExtensions.replace_tok("$0",props.get_Item(q.get_Name()),q.get_Text())):say(q.get_Text())):void 0);
+  })),null):m.$==1&&(a$27=NLU.Yes(m.$0),a$27!=null&&a$27.$==1&&(($13=Response("painVideo",a$27.$0),$13!=null&&$13.$==1)&&m.$1.$==0))?cui["EchoHtml'"]("<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/SkAqOditKN0\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"):m.$==1&&(a$28=Assert(m.$0),a$28!=null&&a$28.$==1&&(a$29=NLU.Intent$1("medjournal",a$28.$0),a$29!=null&&a$29.$==1&&(($15=a$29.$0[1],$15!=null&&$15.$==1)&&(m.$1.$==0&&($14=a$29.$0[1].$0,true)))))?(say("ok I added that entry to your medication journal."),say("You should be careful not to take too many painkillers over a short period of time.")):(popu(),Main.debug("Main interpreter did not understand utterance."),say("Sorry I didn't understand what you meant."),questions.length>0?(q=Seq.nth(0,questions),haveProp(q.get_Name())?say(ClientExtensions.replace_tok("$0",props.get_Item(q.get_Name()),q.get_Text())):say(q.get_Text())):void 0);
   Main.debug((((Runtime.Curried3(function($16,$17,$18)
   {
    return $16("Ending utterances: "+Utils.prettyPrint($17)+". Ending questions:"+Utils.prettyPrint($18)+".");
@@ -2104,7 +2109,7 @@
    {
     return Concurrency.Bind(QnAMaker.getAnswer("What is an element?"),function(a$4)
     {
-     Client.debug(a$4);
+     Client.debug(Arrays.get(a$4.answers,0).answer);
      return Concurrency.Zero();
     });
    })),null),Client.debug((function($5)

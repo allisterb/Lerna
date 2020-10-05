@@ -23,7 +23,6 @@
     <None Include="wsconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Humanizer.Core" Version="2.8.26" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Npgsql.FSharp" Version="3.7.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
@@ -39,6 +38,9 @@
     <ProjectReference Include="..\Lerna.NLU.Wit.Web\Lerna.NLU.Wit.Web.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Humanizer">
+      <HintPath>..\..\lib\Humanizer.dll</HintPath>
+    </Reference>
     <Reference Include="SMApp.BotLibre">
       <HintPath>..\..\..\SMApp\ext\SMApp.BotLibre\bin\Debug\netstandard2.0\SMApp.BotLibre.dll</HintPath>
     </Reference>
