@@ -159,17 +159,13 @@ module Client =
                 | ClientUnderstand -> say' "I'm still trying to understand what you said before."
                 | ClientReady ->
                     match command with
+                    //| Text.One -> CUI.Avatar.
                     (* Quick commands *)
                     | Text.QuickHello m 
                     | Text.QuickHelp m 
                     | Text.QuickYes m
                     | Text.QuickNo m -> 
-                        async {
-                            let! r = QnAMaker.getAnswer "What is an element?" 
-                            debug r.answers.[0].answer
-                        } |> Async.Start
-                        debug <| sprintf "Quick Text: %A." m
-                        echo """<iframe src="https://calendar.google.com/calendar/embed?src=cocnrm4290919hobq1f5he7leg%40group.calendar.google.com&ctz=America%2FPort_of_Spain" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>"""
+                        debug <| sprintf "Quick Text: %A." m                        
                         m |> push |> Main.update CUI Props Questions Responses
                         ClientState <- ClientReady
                     (* Use the NLU service for everything else *)

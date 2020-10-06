@@ -139,6 +139,8 @@ module Main =
                     props.Add("msgs", msgs)
                     if msgs.IsSome && msgs.Value.Length > 0 then
                         say <| sprintf "You have %i new messages." msgs.Value.Length
+                        say msgs.Value.[0].Text
+                        echo <| sprintf "Message: %s" msgs.Value.[0].Text
                 | None _ -> 
                     say <| sprintf "I did not find a user with the name %s." u
                     ask "addUser" u
@@ -196,6 +198,15 @@ module Main =
         | No(Response "switchUser" (_, Str user))::[] -> 
             say <| sprintf "Ok I did not switch to user %s." user
         
+        | Assert(Intent "studyjournal" (_, _))::[] ->
+            echo """<img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.YSxy_C2rlS83dQdUOq9MqwHaFB%26pid%3DApi&f=1"/>"""
+            say "Good job! You are right on track with the rest of students in your cohort. Keep it up."
+        (* Reference *)
+
+        | Assert(Intent "nextclass" _)::[] ->
+            echo """<iframe src="https://calendar.google.com/calendar/embed?src=cocnrm4290919hobq1f5he7leg%40group.calendar.google.com&ctz=America%2FPort_of_Spain" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>"""
+            say "Your next chemistry class is on Monday at 8:30AM."
+        
         (* Reference *)
 
         | Assert(Intent "reference" (_, Entity1Of1 "term" t))::[] ->
@@ -206,6 +217,15 @@ module Main =
                 let! t = Server.mdtotext a
                 echo h
                 say t 
+            } |> Async.Start
+
+        (* Quiz *)
+
+        | Assert(Intent "quiz" (_, Entity1Of1 "term" t))::[] ->
+            async {
+                echo "What is the most accurate definition of an element?<br>1. A bond between molecules<br>2. A substance that cannot be broken down into simpler components.<br>3. A combination of atoms.<br> 4. A part of water."
+                say "What is the most accurate definition of an element? 1. A bond between molecules. 2. A substance that cannot be broken down into simpler components. 3. A combination of atoms 4. A part of water."
+   
             } |> Async.Start
         | _ -> 
             popu()

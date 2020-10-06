@@ -22,7 +22,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{F1436862-5B17-4E7D-BF7E-903335AE2E75}"
 	ProjectSection(SolutionItems) = preProject
 		..\scripts\SQL\DDL_CREATE_DB_lerna.sql = ..\scripts\SQL\DDL_CREATE_DB_lerna.sql
-		DDL_CREATE_TABLE_lerna.messages.sql = DDL_CREATE_TABLE_lerna.messages.sql
+		..\scripts\SQL\DDL_CREATE_TABLE_lerna.messages.sql = ..\scripts\SQL\DDL_CREATE_TABLE_lerna.messages.sql
 		..\scripts\SQL\DDL_CREATE_TABLE_lerna.study_journal.sql = ..\scripts\SQL\DDL_CREATE_TABLE_lerna.study_journal.sql
 		..\scripts\SQL\DDL_CREATE_TABLE_lerna_user.sql = ..\scripts\SQL\DDL_CREATE_TABLE_lerna_user.sql
 		..\scripts\SQL\DDL_CREATE_USER_lerna.sql = ..\scripts\SQL\DDL_CREATE_USER_lerna.sql
@@ -36,7 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{AFFD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shell", "Shell", "{0F79F0BC-CB01-445B-A50A-3733388F4463}"
 	ProjectSection(SolutionItems) = preProject
-		question.cmd = question.cmd
+		..\scripts\Shell\question.cmd = ..\scripts\Shell\question.cmd
 	EndProjectSection
 EndProject
 Global
