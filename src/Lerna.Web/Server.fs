@@ -29,6 +29,12 @@ module Server =
     let humanize(date:DateTime) = async { return date.Humanize() }
 
     [<Rpc>]
+    let mdtohtml(s:string) = async { return Markdig.Markdown.ToHtml s }
+
+    [<Rpc>]
+    let mdtotext(s:string) = async { return Markdig.Markdown.ToPlainText s }
+
+    [<Rpc>]
     let getUser(user:string) : Async<User option> = 
         pgdb
         |> Sql.query "SELECT * FROM lerna_user WHERE user_name=@u"

@@ -26,6 +26,8 @@ module Main =
        
         (* Audio and text cues *)
 
+        let echo t = cui.EchoHtml' t
+
         let say' t = cui.Say t
         
         let say t =
@@ -71,6 +73,7 @@ module Main =
             | m when not (haveProp n) -> Some m
             | _ -> None
          
+
         let (|Assert|_|) :Utterance -> Utterance option =
             function
             | PropSet "user" m when questions.Count = 0 -> 
@@ -193,6 +196,17 @@ module Main =
         | No(Response "switchUser" (_, Str user))::[] -> 
             say <| sprintf "Ok I did not switch to user %s." user
         
+        (* Reference *)
+
+        | Assert(Intent "reference" (_, Entity1Of1 "term" t))::[] ->
+            async {
+                let! answer = Lerna.NLU.QnAMaker.getAnswer t.Value
+                let a = answer.answers.[0].answer
+                let! h = Server.mdtohtml a
+                let! t = Server.mdtotext a
+                echo h
+                say t 
+            } |> Async.Start
         | _ -> 
             popu()
             debug "Main interpreter did not understand utterance."

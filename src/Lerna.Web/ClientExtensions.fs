@@ -34,9 +34,9 @@ module ClientExtensions =
 
     let replace_tok (token:string) (value:string) (s:string) = s.Replace(token, value)
 
-    let mdh1 = RegExp("^# (.*$)", "gim")
-    let mdh2 = RegExp("^## (.*$)", "gim")
-    let mdh3 = RegExp("^### (.*$)", "gim")
+    let mdh1 = RegExp("/^# (.*$)/", "gim")
+    let mdh2 = RegExp("/^## (.*$)/", "gim")
+    let mdh3 = RegExp("/^### (.*$)/", "gim")
     let mdbblockquote = RegExp("/^\> (.*$)/", "gim")
     let mdbold = RegExp("/^\> (.*$)/", "gim")
     

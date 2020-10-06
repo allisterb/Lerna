@@ -231,7 +231,7 @@ module NLU =
 
         let private witapi = new WitApi("MROJG5PKG6G7Q4SVXN7HSIGSIZZ5DI6W")
          
-        let private entity_types = ["wit$contact:contact"; "wit$datetime:datetime"; "subject:subject"]
+        let private entity_types = ["wit$contact:contact"; "wit$datetime:datetime"; "subject:subject"; "term:term"]
 
         let private trait_types = ["domain"; "dialogue_act"]
 
