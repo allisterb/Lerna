@@ -1,19 +1,21 @@
 (function()
 {
  "use strict";
- var Global,Lerna,Models,NLUResponse,Trait,Entity,Sex,Address,Name,User,Student,StudyJournalEntry,Web,ClientExtensions,_Html,htmModule,SC$1,Bootstrap,Controls,SC$2,NLU,Intent,Trait$1,Entity$1,Utterance,Question,Voice,_Entity,Text,_Utterance,_Intent,_Entity$1,_Trait,Domain,SC$3,CUI,MicState,ClientState,Interpreter,CUI$1,SC$4,Main,SC$5,Study,SC$6,Client,SC$7,Lerna$Web_GeneratedPrintf,IntelliFactory,Runtime,WebSharper,Strings,Utils,console,$,Arrays,List,Seq,UI,Doc,AttrModule,JavaScript,Pervasives,Collections,Map,NLU$1,Wit,WitApi,Concurrency,Random,Operators,Remoting,AjaxRemotingProvider,Wit$1,document,Unchecked,QnAMaker,Dictionary;
+ var Global,Lerna,Models,Sex,Address,Name,User,Student,StudyJournalEntry,Message,Wit,NLUResponse,Trait,Entity,Web,ClientExtensions,_Html,htmModule,SC$1,Bootstrap,Controls,SC$2,NLU,Intent,Trait$1,Entity$1,Utterance,Question,Voice,_Entity,Text,_Utterance,_Intent,_Entity$1,_Trait,Domain,SC$3,CUI,MicState,ClientState,Interpreter,CUI$1,SC$4,Main,SC$5,Study,SC$6,Client,SC$7,Lerna$Web_GeneratedPrintf,IntelliFactory,Runtime,WebSharper,Strings,Utils,console,$,Arrays,List,Seq,UI,Doc,AttrModule,JavaScript,Pervasives,Collections,Map,NLU$1,Wit$1,WitApi,Concurrency,Random,Operators,Remoting,AjaxRemotingProvider,Wit$2,document,Unchecked,QnAMaker,Dictionary;
  Global=self;
  Lerna=Global.Lerna=Global.Lerna||{};
  Models=Lerna.Models=Lerna.Models||{};
- NLUResponse=Models.NLUResponse=Models.NLUResponse||{};
- Trait=Models.Trait=Models.Trait||{};
- Entity=Models.Entity=Models.Entity||{};
  Sex=Models.Sex=Models.Sex||{};
  Address=Models.Address=Models.Address||{};
  Name=Models.Name=Models.Name||{};
  User=Models.User=Models.User||{};
  Student=Models.Student=Models.Student||{};
  StudyJournalEntry=Models.StudyJournalEntry=Models.StudyJournalEntry||{};
+ Message=Models.Message=Models.Message||{};
+ Wit=Models.Wit=Models.Wit||{};
+ NLUResponse=Wit.NLUResponse=Wit.NLUResponse||{};
+ Trait=Wit.Trait=Wit.Trait||{};
+ Entity=Wit.Entity=Wit.Entity||{};
  Web=Lerna.Web=Lerna.Web||{};
  ClientExtensions=Web.ClientExtensions=Web.ClientExtensions||{};
  _Html=Web._Html=Web._Html||{};
@@ -68,53 +70,18 @@
  Collections=WebSharper&&WebSharper.Collections;
  Map=Collections&&Collections.Map;
  NLU$1=Lerna&&Lerna.NLU;
- Wit=NLU$1&&NLU$1.Wit;
- WitApi=Wit&&Wit.WitApi;
+ Wit$1=NLU$1&&NLU$1.Wit;
+ WitApi=Wit$1&&Wit$1.WitApi;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  Random=WebSharper&&WebSharper.Random;
  Operators=WebSharper&&WebSharper.Operators;
  Remoting=WebSharper&&WebSharper.Remoting;
  AjaxRemotingProvider=Remoting&&Remoting.AjaxRemotingProvider;
- Wit$1=Global.Wit;
+ Wit$2=Global.Wit;
  document=Global.document;
  Unchecked=WebSharper&&WebSharper.Unchecked;
  QnAMaker=NLU$1&&NLU$1.QnAMaker;
  Dictionary=Collections&&Collections.Dictionary;
- NLUResponse.New=function(type,msg,action,traits,entities,confidence)
- {
-  return{
-   type:type,
-   msg:msg,
-   action:action,
-   traits:traits,
-   entities:entities,
-   confidence:confidence
-  };
- };
- Trait.New=function(id,value,confidence)
- {
-  return{
-   id:id,
-   value:value,
-   confidence:confidence
-  };
- };
- Entity.New=function(id,name,role,start,end,body,confidence,entities,suggested,value,type)
- {
-  return{
-   id:id,
-   name:name,
-   role:role,
-   start:start,
-   end:end,
-   body:body,
-   confidence:confidence,
-   entities:entities,
-   suggested:suggested,
-   value:value,
-   type:type
-  };
- };
  Sex.Intersex={
   $:2
  };
@@ -169,6 +136,50 @@
    Date:Date,
    Subject:Subject,
    Duration:Duration
+  };
+ };
+ Message.New=function(UserName,Date,Text$1,IsRead)
+ {
+  return{
+   UserName:UserName,
+   Date:Date,
+   Text:Text$1,
+   IsRead:IsRead
+  };
+ };
+ NLUResponse.New=function(type,msg,action,traits,entities,confidence)
+ {
+  return{
+   type:type,
+   msg:msg,
+   action:action,
+   traits:traits,
+   entities:entities,
+   confidence:confidence
+  };
+ };
+ Trait.New=function(id,value,confidence)
+ {
+  return{
+   id:id,
+   value:value,
+   confidence:confidence
+  };
+ };
+ Entity.New=function(id,name,role,start,end,body,confidence,entities,suggested,value,type)
+ {
+  return{
+   id:id,
+   name:name,
+   role:role,
+   start:start,
+   end:end,
+   body:body,
+   confidence:confidence,
+   entities:entities,
+   suggested:suggested,
+   value:value,
+   type:type
   };
  };
  ClientExtensions.scriptmd=function()
@@ -1877,7 +1888,7 @@
    $0:a$1.$0
   }:null),a!=null&&a.$==1&&(a$2=AnonAssert(a.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Intent$1("hello",a$2.$0),a$3!=null&&a$3.$==1&&(a$3.$0[1]==null&&m.$1.$==0))))?(props.Add("started",true),sayRandom(CUI.helloPhrases(),"")):m.$==1&&(a$4=AnonAssert(m.$0),a$4!=null&&a$4.$==1&&(a$5=NLU.Intent$1("hello",a$4.$0),a$5!=null&&a$5.$==1&&(a$5.$0[1]==null&&m.$1.$==0)))?say("Hello, tell me your name to get started."):m.$==1&&(a$6=AnonAssert(m.$0),a$6!=null&&a$6.$==1&&(a$7=NLU.Intent$1("hello",a$6.$0),a$7!=null&&a$7.$==1&&(a$8=NLU.Entity1Of1("contact",a$7.$0[1]),a$8!=null&&a$8.$==1&&(m.$1.$==0&&($3=a$8.$0,true)))))?(u=$3.get_Value(),sayRandom(CUI.waitRetrievePhrases(),"user name"),Concurrency.Start((b=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-172269885",[u]),function(a$25)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-448192753",[u]),function(a$25)
    {
     var u$1;
     return a$25==null?(say((function($12)
@@ -1886,7 +1897,7 @@
      {
       return $12("I did not find a user with the name "+Utils.toSafe($13)+".");
      };
-    }(Global.id))(u)),ask("addUser",u),Concurrency.Zero()):(u$1=a$25.$0,Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:-2126081244",[u$1.Name]),function()
+    }(Global.id))(u)),ask("addUser",u),Concurrency.Zero()):(u$1=a$25.$0,Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:2104449810",[u$1.Name]),function()
     {
      props.Add("user",u$1);
      sayRandom(CUI.helloUserPhrases(),(function($12)
@@ -1896,7 +1907,7 @@
        return $12(Utils.prettyPrint($13));
       };
      }(Global.id))(props.get_Item("user")));
-     return u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:-340119042",[u$1.LastLoggedIn.$0]),function(a$26)
+     return Concurrency.Combine(u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:-923871684",[u$1.LastLoggedIn.$0]),function(a$26)
      {
       say((function($12)
       {
@@ -1906,13 +1917,26 @@
        };
       }(Global.id))(a$26));
       return Concurrency.Zero();
-     }):Concurrency.Zero();
+     }):Concurrency.Zero(),Concurrency.Delay(function()
+     {
+      return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getMessages:1484264545",[u$1.Name]),function(a$26)
+      {
+       props.Add("msgs",a$26);
+       return a$26!=null&&a$26.$0.get_Length()>0?(say((function($12)
+       {
+        return function($13)
+        {
+         return $12("You have "+Global.String($13)+" new messages.");
+        };
+       }(Global.id))(a$26.$0.get_Length())),Concurrency.Zero()):Concurrency.Zero();
+      });
+     }));
     }));
    });
   })),null)):m.$==1&&(a$9=NLU.Yes(m.$0),a$9!=null&&a$9.$==1&&(a$10=AnonResponse("addUser",a$9.$0),a$10!=null&&a$10.$==1&&(a$11=Str(a$10.$0[1]),a$11!=null&&a$11.$==1&&(m.$1.$==0&&($4=a$11.$0,true)))))?Concurrency.Start((b$1=null,Concurrency.Delay(function()
   {
    sayRandom(CUI.waitAddPhrases(),"user");
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:-2126081244",[$4]),function(a$25)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:2104449810",[$4]),function(a$25)
    {
     return a$25==null?(say((function($12)
     {
@@ -1920,13 +1944,27 @@
      {
       return $12("Sorry I was not able to add the user "+Utils.toSafe($13)+" to the system.");
      };
-    }(Global.id))($4)),Concurrency.Zero()):(addProp("user",$4),say((function($12)
+    }(Global.id))($4)),Concurrency.Zero()):(addProp("user",$4),Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addMessage:-1628034647",[$4,"Welcome to Lerna."]),function()
     {
-     return function($13)
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getMessages:1484264545",[$4]),function(a$26)
      {
-      return $12("Hello "+Utils.prettyPrint($13)+", nice to meet you.");
-     };
-    }(Global.id))(props.get_Item("user"))),Concurrency.Zero());
+      addProp("msgs",a$26);
+      say((function($12)
+      {
+       return function($13)
+       {
+        return $12("Hello "+Utils.prettyPrint($13)+", nice to meet you.");
+       };
+      }(Global.id))(props.get_Item("user")));
+      return a$26!=null&&a$26.$0.get_Length()>0?(say((function($12)
+      {
+       return function($13)
+       {
+        return $12("You have "+Global.String($13)+" new messages.");
+       };
+      }(Global.id))(a$26.$0.get_Length())),Concurrency.Zero()):Concurrency.Zero();
+     });
+    }));
    });
   })),null):m.$==1&&(a$12=NLU.No(m.$0),a$12!=null&&a$12.$==1&&(a$13=AnonResponse("addUser",a$12.$0),a$13!=null&&a$13.$==1&&(a$14=Str(a$13.$0[1]),a$14!=null&&a$14.$==1&&(m.$1.$==0&&($5=a$14.$0,true)))))?say((function($12)
   {
@@ -1939,7 +1977,7 @@
    $0:$9
   }):null,a$15!=null&&a$15.$==1&&(a$17=NLU.Intent$1("hello",a$15.$0),a$17!=null&&a$17.$==1&&(a$17.$0[0]==null&&(a$18=NLU.Entity1Of1("contact",a$17.$0[1]),a$18!=null&&a$18.$==1&&(m.$1.$==0&&($8=a$18.$0,true))))))?Concurrency.Start((b$2=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-172269885",[$8.get_Value()]),function(a$25)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-448192753",[$8.get_Value()]),function(a$25)
    {
     return a$25==null?(say((function($12)
     {
@@ -2081,7 +2119,7 @@
   var M,mic;
   Client.set_CUI((M={
    $:1,
-   $0:new Wit$1.Microphone(document.getElementById("microphone"))
+   $0:new Wit$2.Microphone(document.getElementById("microphone"))
   },CUI$1.New(Client.CUI().Voice,M,Client.CUI().Term,Client.CUI().Avatar,Client.CUI().Caption)));
   mic=Client.CUI().Mic.$0;
   mic.onconnecting=function()
@@ -2335,7 +2373,7 @@
     {
      return $5("Quick Text: "+Lerna$Web_GeneratedPrintf.p$7($6)+".");
     };
-   }(Global.id))($4)),u=Client.push($4),Main.update(Client.CUI(),Client.Props(),Client.Questions(),Client.Responses(),u),Client.set_ClientState(ClientState.ClientReady)):Client.CUI().Wait((b$1=null,Concurrency.Delay(function()
+   }(Global.id))($4)),Client.echo("<iframe src=\"https://calendar.google.com/calendar/embed?src=cocnrm4290919hobq1f5he7leg%40group.calendar.google.com&ctz=America%2FPort_of_Spain\" style=\"border: 0\" width=\"800\" height=\"600\" frameborder=\"0\" scrolling=\"no\"></iframe>"),u=Client.push($4),Main.update(Client.CUI(),Client.Props(),Client.Questions(),Client.Responses(),u),Client.set_ClientState(ClientState.ClientReady)):Client.CUI().Wait((b$1=null,Concurrency.Delay(function()
    {
     Client.set_ClientState(ClientState.ClientUnderstand);
     Text.getUtterance(command,function(meaning)

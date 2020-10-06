@@ -132,6 +132,10 @@ module Main =
                     if u.LastLoggedIn.IsSome then 
                         let! h = Server.humanize u.LastLoggedIn.Value
                         say <| sprintf "You last logged in %s." h 
+                    let! msgs = Server.getMessages u.Name
+                    props.Add("msgs", msgs)
+                    if msgs.IsSome && msgs.Value.Length > 0 then
+                        say <| sprintf "You have %i new messages." msgs.Value.Length
                 | None _ -> 
                     say <| sprintf "I did not find a user with the name %s." u
                     ask "addUser" u
@@ -140,10 +144,15 @@ module Main =
         let addUser u = 
             async { 
                 do sayRandom waitAddPhrases "user"
-                match! Server.addUser u with 
+                match! Server.addUser u; with 
                 | Some _ -> 
                     addProp "user" u
+                    do! Server.addMessage u "Welcome to Lerna." |> Async.Ignore
+                    let! msgs = Server.getMessages u
+                    addProp "msgs" msgs
                     say <| sprintf "Hello %A, nice to meet you." props.["user"]
+                    if msgs.IsSome && msgs.Value.Length > 0 then
+                        say <| sprintf "You have %i new messages." msgs.Value.Length
                 | None _ -> 
                     say <| sprintf "Sorry I was not able to add the user %s to the system." u
             } |> Async.Start
@@ -152,7 +161,6 @@ module Main =
         (* Interpreter logic begins here *)
         match utterances |> Seq.take (if utterances.Count >= 5 then 5 else utterances.Count) |> List.ofSeq with
 
-        
         (* Hello *)
         
         | Start(AnonAssert(Intent "hello" (_, None)))::[] ->  

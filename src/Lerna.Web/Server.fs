@@ -16,7 +16,7 @@ open Lerna.Models
 module Server =        
     let private pgdb =
         Sql.host (Api.Config("PGSQL"))
-        |> Sql.port 5433
+        |> Sql.port 5432
         |> Sql.username "lerna"
         |> Sql.password "lerna"
         |> Sql.database "lerna"
@@ -92,4 +92,33 @@ module Server =
             Duration = read.intOrNone "duration"
         }) 
         |> Async.map(function | Ok j  -> Some j | Error exn -> err(exn.Message); None)
+
+    [<Rpc>]
+    let addMessage user text : Async<unit Option> =
+        pgdb
+        |> Sql.query "INSERT INTO public.messages(user_name, date, text) VALUES (@u, @dt, @t);"
+        |> Sql.parameters [
+            "u", Sql.string user
+            "dt", Sql.timestamp DateTime.UtcNow
+            "t", Sql.string text
+        ]
+        |> Sql.executeNonQueryAsync
+        |> Async.map(
+            function 
+            | Ok n -> (if n > 0 then infof "Added message {0} for user {1} to database." [text;user]; Some() else None) 
+            | Error exn -> errex "Did not add message {0} for user {1} to database" exn [text;user]; None)
+    
+    [<Rpc>]
+    let getMessages(userName:string) : Async<Message list option> = 
+        pgdb
+        |> Sql.query "SELECT * FROM messages WHERE user_name=@u AND is_read=FALSE"
+        |> Sql.parameters ["u", Sql.string userName]
+        |> Sql.executeAsync (fun read -> {
+            UserName =  read.string("user_name")
+            Date = (read.timestamp "date").ToDateTime() 
+            IsRead = read.bool "is_read"  
+            Text = read.string "text"
+        }) 
+        |> Async.map(function | Ok j  -> Some j | Error exn -> err(exn.Message); None)
+
     

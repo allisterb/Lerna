@@ -169,6 +169,7 @@ module Client =
                             debug r.answers.[0].answer
                         } |> Async.Start
                         debug <| sprintf "Quick Text: %A." m
+                        echo """<iframe src="https://calendar.google.com/calendar/embed?src=cocnrm4290919hobq1f5he7leg%40group.calendar.google.com&ctz=America%2FPort_of_Spain" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>"""
                         m |> push |> Main.update CUI Props Questions Responses
                         ClientState <- ClientReady
                     (* Use the NLU service for everything else *)
