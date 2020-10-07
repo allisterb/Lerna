@@ -83,9 +83,7 @@ module CUI =
          member x.Say text =
             async {
                 let synth = Window.SpeechSynthesis
-                if synth.Speaking then 
-                    synth.Cancel()
-                    SDK.Chime()
+                if synth.Speaking then SDK.Chime()
                 x.Avatar.AddMessage(text)
                 x.Avatar.ProcessMessages(0) 
             } |> Async.Start

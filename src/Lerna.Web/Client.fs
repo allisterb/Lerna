@@ -68,13 +68,14 @@ module Client =
 
     let synth = Window.SpeechSynthesis
     
-    let initSpeech() =
+    let initSpeech((cui: Ref<CUI>)) =
         let voices = synth.GetVoices() |> toArray         
         if voices.Length > 0 then
             let v = voices |> Array.find (fun v -> v.Default) in 
-            CUI <- { CUI with Voice = Some v }; debug <| sprintf "Using default voice %s." CUI.Voice.Value.Name 
-            CUI.Avatar.NativeVoice <- true
-            CUI.Avatar.NativeVoiceName <- v.Name
+            cui:= { !cui with Voice = Some v }; debug <| sprintf "Using default voice %s." (!cui).Voice.Value.Name 
+            let cui' = !cui
+            cui'.Avatar.NativeVoice <- true
+            cui'.Avatar.NativeVoiceName <- v.Name
         else  
             echo "No speech synthesis voice is available."
 
@@ -93,9 +94,9 @@ module Client =
     
     (* Mic *)
 
-    let initMic interpret =
-        CUI <- { CUI with Mic = Some(new Mic()) }
-        let mic = CUI.Mic.Value
+    let initMic (cui: Ref<CUI>) interpret  =
+        cui := { !cui with Mic = Some(new Mic()) }
+        let mic = (!cui).Mic.Value
         do mic.onConnecting <- (fun _ -> MicState <- MicConnecting; debug "Mic connecting...")
         do mic.onDisconnected <- (fun _ -> MicState <- MicDisconnected;debug "Mic disconnected.")
         do mic.onAudioStart <- (fun _ -> MicState <- MicAudioStart;debug "Mic audio start...")
@@ -107,7 +108,7 @@ module Client =
             | ClientReady ->
                 if not (isNull i || isNull e) then 
                     MicState <- MicResult(i,e) 
-                    debug <| sprintf "Mic result: %A %A." i e; interpret mic (i,e)
+                    debug <| sprintf "Mic result: %A %A." i e; interpret cui mic (i,e)
                 else 
                     debug "Mic: No result returned."        
             | ClientUnderstand -> echo "I'm still trying to understand what you said before."
@@ -120,7 +121,7 @@ module Client =
     /// Main interpreter
     let Main =             
         /// Mic interpreter
-        let main' (_:Mic) (command:obj*obj) =
+        let main' (cui:Ref<CUI>) (_:Mic) (command:obj*obj) =
             let i, e = command
             debug <| sprintf "Voice: %A %A" i e
             let intent = 
@@ -139,13 +140,14 @@ module Client =
             | None, None, None -> ()
             | _ -> 
                 debug <| sprintf "Voice: %A %A %A" intent _trait entity
-                Utterance(intent, _trait, entity) |> push |> Main.update CUI Props Questions Responses
+                Utterance(intent, _trait, entity) |> push |> Main.update (!cui) Props Questions Responses
         
         /// Terminal interpreter 
-        let main (term:Terminal) (command:string)  =
-            CUI <- { CUI with Term = term }
-            do if CUI.Mic = None then initMic main'
-            do if CUI.Voice = None then initSpeech ()
+        let main (cui: Ref<CUI>) (term:Terminal) (command:string)  =
+            cui := { CUI with Term = term }
+            let cui' = !cui
+            do if cui'.Mic = None then initMic cui main'
+            do if cui'.Voice = None then initSpeech cui
             do if ClientState = ClientNotInitialzed then ClientState <- ClientReady
             match command with
             (* Quick commands *)
@@ -167,7 +169,7 @@ module Client =
                     | Text.QuickYes m
                     | Text.QuickNo m -> 
                         debug <| sprintf "Quick Text: %A." m                        
-                        m |> push |> Main.update CUI Props Questions Responses
+                        m |> push |> Main.update cui' Props Questions Responses
                         ClientState <- ClientReady
                     (* Use the NLU service for everything else *)
                     | _->         
@@ -177,13 +179,13 @@ module Client =
                                 match meaning with
                                 | Text.HasUtterance m -> 
                                     debug <| sprintf "Text: Intent: %A, Traits: %A, Entities: %A" m.Intent m.Traits m.Entities
-                                    m |> push |> Main.update CUI Props Questions Responses
+                                    m |> push |> Main.update cui' Props Questions Responses
                                 | _ -> 
                                     debug "Text: Did not receive a meaning from the server." 
                                     say' "Sorry I did not understand what you said."
                             )
                             ClientState <- ClientReady
-                        } |> CUI.Wait
+                        } |> cui'.Wait
                 | ClientNotInitialzed -> error "Client is not initialized."
         let mainOpt =
             Options(
@@ -191,8 +193,8 @@ module Client =
                 Greetings = "Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech.",
                 Prompt =">"
             )       
-        Interpreter(main', (main, mainOpt))
+        Interpreter(main' (ref CUI), (main (ref CUI), mainOpt))
     
     let run() =        
-        CUI <- { CUI with Term = Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) }
+        Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
         Doc.Empty
