@@ -82,10 +82,12 @@ module CUI =
  
          member x.Say text =
             async {
-                let synth = Window.SpeechSynthesis
-                do if synth.Speaking then synth.Cancel()
+                let synth = speechSynthesis()
+                if synth.Speaking then 
+                    synth.Cancel()
+                    SDK.Chime()
                 x.Avatar.AddMessage(text)
-                x.Avatar.ProcessMessages(0)
+                x.Avatar.ProcessMessages(0) 
             } |> Async.Start
 
          member x.sayRandom phrases t = x.Say <| getRandomPhrase phrases t

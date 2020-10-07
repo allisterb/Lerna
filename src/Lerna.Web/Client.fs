@@ -43,6 +43,7 @@ module Client =
             web
         Caption = false
     }
+
     let mutable MicState = MicNotInitialized
     let mutable ClientState = ClientNotInitialzed
     
@@ -84,7 +85,7 @@ module Client =
         say' text
         
     let sayVoices() =
-        let voices = synth.GetVoices() |> toArray    
+        let voices = speechSynthesis().GetVoices() |> toArray    
         sprintf "There are currently %i voices installed on this computer or device." voices.Length |> say'
         voices |> Array.iteri (fun i v -> sprintf "Voice %i. Name: %s, Local: %A." i v.Name v.LocalService |> say')
 

@@ -13,9 +13,6 @@ module Main =
     let questions = [ 
         Question("addUser", "Do you want me to add the user $0?")
         Question("switchUser", "Do you want me to switch to the user $0?")
-        Question("painSurvey", "Would you like to take a short survey on your pain symptoms so I can understand them better.")
-        Question("painVideo", "Would you like to see a video about pain management that might help you?")
-        Question("medReminder", "Would you like me to add a reminder about your meds so you won't forget them later?")
     ]  
     let getQuestion n = questions |> List.tryFind(fun q -> q.Name = n)
     let haveQuestion n = questions |> List.exists(fun q -> q.Name = n)
@@ -34,13 +31,14 @@ module Main =
             responses.Push t
             say' t
 
+
         let sayRandom p v  = 
             let t = getRandomPhrase p v
             responses.Push(t) |> ignore
             cui.Say t
         
         let sayRandom' p = sayRandom p ""
-
+        
         (* Manage the dialogue state elements*)
 
         let haveProp k = props.ContainsKey k
@@ -129,12 +127,14 @@ module Main =
             async { 
                 match! Server.getUser u with 
                 | Some u ->
+                    sayRandom helloUserPhrases <| sprintf "%A" props.["user"]
                     do! Server.updateUserLastLogin u.Name |> Async.Ignore
                     props.Add("user", u)
-                    sayRandom helloUserPhrases <| sprintf "%A" props.["user"]
+                    
                     if u.LastLoggedIn.IsSome then 
                         let! h = Server.humanize u.LastLoggedIn.Value
-                        say <| sprintf "You last logged in %s." h 
+                        say <| sprintf "You last logged in %s." h
+                        
                     let! msgs = Server.getMessages u.Name
                     props.Add("msgs", msgs)
                     if msgs.IsSome && msgs.Value.Length > 0 then
