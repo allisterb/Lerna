@@ -127,7 +127,7 @@ module Main =
             async { 
                 match! Server.getUser u with 
                 | Some u ->
-                    sayRandom helloUserPhrases <| sprintf "%A" props.["user"]
+                    sayRandom helloUserPhrases <| sprintf "%A" u.Name
                     do! Server.updateUserLastLogin u.Name |> Async.Ignore
                     props.Add("user", u)
                     
@@ -138,9 +138,9 @@ module Main =
                     let! msgs = Server.getMessages u.Name
                     props.Add("msgs", msgs)
                     if msgs.IsSome && msgs.Value.Length > 0 then
-                        say <| sprintf "You have %i new messages." msgs.Value.Length
+                        say <| sprintf "You have %i new message%s." msgs.Value.Length (if msgs.Value.Length > 1 then "s" else "")
                         say msgs.Value.[0].Text
-                        echo <| sprintf "Message: %s" msgs.Value.[0].Text
+                        echo <| sprintf "Message %s" msgs.Value.[0].Text
                 | None _ -> 
                     say <| sprintf "I did not find a user with the name %s." u
                     ask "addUser" u

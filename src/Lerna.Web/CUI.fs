@@ -82,7 +82,7 @@ module CUI =
  
          member x.Say text =
             async {
-                let synth = speechSynthesis()
+                let synth = Window.SpeechSynthesis
                 if synth.Speaking then 
                     synth.Cancel()
                     SDK.Chime()
@@ -92,7 +92,7 @@ module CUI =
 
          member x.SayAngry m =
            async {
-               let synth = speechSynthesis()
+               let synth = Window.SpeechSynthesis
                if synth.Speaking then 
                    synth.Cancel()
                    SDK.Chime()
