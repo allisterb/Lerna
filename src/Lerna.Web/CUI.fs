@@ -90,6 +90,16 @@ module CUI =
                 x.Avatar.ProcessMessages(0) 
             } |> Async.Start
 
+         member x.SayAngry m =
+           async {
+               let synth = speechSynthesis()
+               if synth.Speaking then 
+                   synth.Cancel()
+                   SDK.Chime()
+               x.Avatar.AddMessage2(m, "anger")
+               x.Avatar.ProcessMessages(0) 
+           } |> Async.Start
+
          member x.sayRandom phrases t = x.Say <| getRandomPhrase phrases t
      
          member x.Wait (f:unit -> unit) =
