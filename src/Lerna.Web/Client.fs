@@ -72,12 +72,13 @@ module Client =
         let voices = synth.GetVoices() |> toArray         
         if voices.Length > 0 then
             let v = voices |> Array.find (fun v -> v.Default) in 
-            cui:= { !cui with Voice = Some v }; debug <| sprintf "Using default voice %s." (!cui).Voice.Value.Name 
+            cui := { !cui with Voice = Some v }  
             let cui' = !cui
+            debug <| sprintf "Using browser speech synthesis voice %s." cui'.Voice.Value.Name
             cui'.Avatar.NativeVoice <- true
             cui'.Avatar.NativeVoiceName <- v.Name
         else  
-            echo "No speech synthesis voice is available."
+            echo "No browser speech synthesis voice is available. Falling back to CMU TTS."
 
     let say' text = CUI.Say text                
 
@@ -145,16 +146,16 @@ module Client =
         /// Terminal interpreter 
         let main (cui: Ref<CUI>) (term:Terminal) (command:string)  =
             cui := { CUI with Term = term }
+            do 
+                if (!cui).Mic = None then initMic cui main'
+                if (!cui).Voice = None then initSpeech cui
             let cui' = !cui
-            do if cui'.Mic = None then initMic cui main'
-            do if cui'.Voice = None then initSpeech cui
             do if ClientState = ClientNotInitialzed then ClientState <- ClientReady
             match command with
             (* Quick commands *)
             | Text.Blank -> say' "Tell me what you want me to do or ask me a question."
             | Text.Debug ->  
                 debug <| sprintf "Utterances: %A" Utterances
-                //debug <| sprintf "Properties: %A" Props
                 debug <| sprintf "Questions: %A" Questions
             | Text.Voices -> sayVoices()
             | _ ->
@@ -162,7 +163,6 @@ module Client =
                 | ClientUnderstand -> say' "I'm still trying to understand what you said before."
                 | ClientReady ->
                     match command with
-                    //| Text.One -> CUI.Avatar.
                     (* Quick commands *)
                     | Text.QuickHello m 
                     | Text.QuickHelp m 
@@ -197,4 +197,5 @@ module Client =
     
     let run() =        
         Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
+        
         Doc.Empty

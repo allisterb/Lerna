@@ -22,14 +22,12 @@ module Controls =
     
     let private cls = Attr.Class
 
-    let Class = Attr.Class
-
-    let Container c = div (cls "container"::[]) c
+    let Container c = div [cls "container"] c
     
     let Input lbl extras (target, labelExtras, targetExtras) =
         div (cls "form-group" :: extras) [
             label labelExtras [text lbl]
-            Doc.Input (cls "form-control" :: targetExtras) target
+            Doc.Input [cls "form-control"; targetExtras] target
         ]
 
     let InputPassword lbl extras (target, labelExtras, targetExtras) =
@@ -59,3 +57,5 @@ module Controls =
                 text lbl
             ]
         ]
+
+    let btn = button [attr.``type`` "button"; attr.``class`` "btn btn-primary"; attr.id "bar"; attr.text "hello"] [] |> Doc.RunById "left"
