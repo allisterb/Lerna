@@ -1,7 +1,7 @@
 (function()
 {
  "use strict";
- var Global,Lerna,NLU,Models,ITSQuestion,ITSAnswerContext,ITSAnswer,ITSAnswers,QnAMaker,$,JSON,WebSharper,Concurrency;
+ var Global,Lerna,NLU,Models,ITSQuestion,ITSAnswerContext,ITSAnswer,ITSAnswers,QnAMaker,$,WebSharper,Utils,JSON,Concurrency;
  Global=self;
  Lerna=Global.Lerna=Global.Lerna||{};
  NLU=Lerna.NLU=Lerna.NLU||{};
@@ -12,8 +12,9 @@
  ITSAnswers=Models.ITSAnswers=Models.ITSAnswers||{};
  QnAMaker=NLU.QnAMaker=NLU.QnAMaker||{};
  $=Global.jQuery;
- JSON=Global.JSON;
  WebSharper=Global.WebSharper;
+ Utils=WebSharper&&WebSharper.Utils;
+ JSON=Global.JSON;
  Concurrency=WebSharper&&WebSharper.Concurrency;
  ITSQuestion.New=function(question)
  {
@@ -46,15 +47,21 @@
    answers:answers
   };
  };
- QnAMaker.getAnswer=function(q)
+ QnAMaker.getAnswer=function(text)
  {
   function a(ok,ko)
   {
    var r;
-   $.ajax((r={},r.url="https://lerna.azurewebsites.net/qnamaker/knowledgebases/ac24190a-9a70-4117-8b6d-72a3a1b501b7/generateAnswer",r.type="POST",r.beforeSend=function(xhr)
+   $.ajax((r={},r.url=(function($1)
+   {
+    return function($2)
+    {
+     return $1("https://babelfy.io/v1/disambiguate?text="+Utils.toSafe($2)+"&lang=EN&extAIDA=true&key=983fc0ec-a6fa-49ef-bd02-203c18aef272");
+    };
+   }(Global.id))(text),r.type="GET",r.beforeSend=function(xhr)
    {
     return xhr.setRequestHeader("Authorization","EndpointKey e5a55563-b1b0-4343-8796-bda5a0509385");
-   },r.contentType="application/json",r.dataType="json",r.data=JSON.stringify(ITSQuestion.New(q)),r.success=function(result)
+   },r.contentType="application/json",r.dataType="json",r.data=JSON.stringify(ITSQuestion.New(text)),r.success=function(result)
    {
     return ok(result);
    },r.error=function(jqxhr)

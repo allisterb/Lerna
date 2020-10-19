@@ -117,7 +117,7 @@ module Client =
             )
         do mic.Connect("4Y2BLQY5TWLIN7HFIV264S53MY4PCUAT")
 
-    let _ = Lerna.Bootstrap.Controls.Container
+    
 
     /// Main interpreter
     let Main =             
@@ -196,6 +196,5 @@ module Client =
         Interpreter(main' (ref CUI), (main (ref CUI), mainOpt))
     
     let run() =        
-        Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
-        
+        Terminal("#term", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
         Doc.Empty

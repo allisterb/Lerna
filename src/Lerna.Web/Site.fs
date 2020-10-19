@@ -9,7 +9,7 @@ open WebSharper.UI
 open WebSharper.UI.Html
 open WebSharper.UI.Server
 
-open Lerna.Bootstrap
+//open Lerna.Bs
 
 type Route =
     | [<EndPoint"/">] Home
@@ -28,7 +28,7 @@ module Templates =
 module Site =
     let HomePage ctx =
         Templates.Main ctx Home "Lerna" [
-            div [attr.id "main"; attr.``class`` "container"] [
+            div [attr.id "term"; attr.``class`` "container"] [
                 client <@ Client.run() @>                
             ]
         ]

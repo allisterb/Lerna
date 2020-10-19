@@ -3,17 +3,3 @@
     --background: white;
     --size: 2;
 }
-
-.mic {
-    font-size: unset;
-    line-height: unset 
-}
-
-.mic-box {
-    border: inherit
-}
-
-.wit-microphone {
-    height: unset;
-    width: 30px;
-}
