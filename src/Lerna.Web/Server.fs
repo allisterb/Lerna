@@ -11,6 +11,9 @@ open WebSharper
 open Npgsql.FSharp
 open Humanizer
 open CherubNLP
+open CherubNLP.Tag
+open CherubNLP.Corpus
+open CherubNLP.Tokenize
 open FastText.NetWrapper
 
 open Lerna
@@ -28,18 +31,60 @@ module Server =
         |> Sql.formatConnectionString
         |> Sql.connect
 
-    let private fasttext = new FastTextWrapper(false)
-    do fasttext.LoadModel(Path.Combine("data", "dbpedia.ftz"))
+    let private fasttext = 
+        let f = new FastTextWrapper(false)
+        do f.LoadModel(Path.Combine("data", "dbpedia.ftz"))
+        f
 
+    let private tokenizer = 
+        let f = new TokenizerFactory(new TokenizationOptions(Pattern = RegexTokenizer.WORD_PUNC), SupportedLanguage.English)
+        do f.GetTokenizer<RegexTokenizer>() |> ignore
+        f
+
+    let private taggerOptions = new TagOptions(NGram=3, Tag="NN")
+
+    let private tagger = 
+        let f = new TaggerFactory(taggerOptions, SupportedLanguage.English)
+        let reader = new CoNLLReader()
+        let corpus = reader.Read(new ReaderOptions (DataDir = "data", FileName = "conll2000_chunking_train.txt"))
+        let t = f.GetTagger<NGramTagger>()
+        t.Train(corpus, taggerOptions)
+        t
+ 
+             (*
+             var tokens = tokenizer.Tokenize("Chancellor of the Exchequer Nigel Lawson's restated commitment");
+
+             // test tag
+             var tagger = new TaggerFactory(new TagOptions
+             {
+                 CorpusDir = Configuration.GetValue<String>("CherubNLP:dataDir"),
+                 NGram = 3,
+                 Tag = "NN"
+             }, SupportedLanguage.English);
+
+             *)
     [<Rpc>]
     let similarity() = 
-        fasttext.GetSentenceVector("An element is a substance that cannot be broken down into any other substance.")
+        Similarity.Cosine("first boil a cup of water then add coffee beans.", [|"first boil water"; "then add coffee"; "first boil water then add coffee"|], fasttext)
+        //let vector = fasttext.GetSentenceVector("To make coffee first boil a cup of water then add coffee beans.");
+        //let dst = [|"first boil water"; "then add coffee"|]
+        //dst |>
+        //return dst.Select(x => CalCosine(vector, fastText.GetSentenceVector(x.ToLower()))).ToArray();
+        //Similarity.Cosine
+        //fasttext.GetLabels()
+        //fasttext.PredictMultiple("An element is a substance that cannot be broken down into any other substance.", 4)
                 
             
         
         //FastText.NetWrapper.FastTextWrapper("An element is a substance that cannot be broken down into any other substance.",  [|
         //        "An element is"    
         //    |], "dbpedia.ft")
+    [<Rpc>]
+    let tag() =
+        let words = tokenizer.Tokenize(sentence = "first boil a cup of water then add coffee beans.")
+        do tagger.Tag(new Sentence (Words = words), taggerOptions);
+        words
+
     [<Rpc>]
     let humanize(date:DateTime) = async { return date.Humanize() }
 

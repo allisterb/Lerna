@@ -1885,7 +1885,7 @@
    b$5=null;
    return Concurrency.Delay(function()
    {
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getMessages:-1746944246",[u$1]),function(a$32)
+    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getMessages:-1363715696",[u$1]),function(a$32)
     {
      props.Add("msgs",a$32);
      return a$32!=null&&a$32.$0.get_Length()>0?(say((((Runtime.Curried3(function($17,$18,$19)
@@ -1905,7 +1905,7 @@
    $0:a$1.$0
   }:null),a!=null&&a.$==1&&(a$2=AnonAssert(a.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Intent$1("hello",a$2.$0),a$3!=null&&a$3.$==1&&(a$3.$0[1]==null&&m.$1.$==0))))?(props.Add("started",true),sayRandom(CUI.helloPhrases(),"")):m.$==1&&(a$4=AnonAssert(m.$0),a$4!=null&&a$4.$==1&&(a$5=NLU.Intent$1("hello",a$4.$0),a$5!=null&&a$5.$==1&&(a$5.$0[1]==null&&m.$1.$==0)))?say("Hello, tell me your name to get started."):m.$==1&&(a$6=AnonAssert(m.$0),a$6!=null&&a$6.$==1&&(a$7=NLU.Intent$1("hello",a$6.$0),a$7!=null&&a$7.$==1&&(a$8=NLU.Entity1Of1("contact",a$7.$0[1]),a$8!=null&&a$8.$==1&&(m.$1.$==0&&($3=a$8.$0,true)))))?(u=$3.get_Value(),sayRandom(CUI.waitRetrievePhrases(),"user name"),Concurrency.Start((b=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1285714486",[u]),function(a$32)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-959026379",[u]),function(a$32)
    {
     var u$1;
     return a$32==null?(say((function($17)
@@ -1920,10 +1920,10 @@
      {
       return $17(Utils.prettyPrint($18));
      };
-    }(Global.id))(u$1.Name)),Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:-778295643",[u$1.Name]),function()
+    }(Global.id))(u$1.Name)),Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:-884410062",[u$1.Name]),function()
     {
      props.Add("user",u$1);
-     return Concurrency.Combine(u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:1657520730",[u$1.LastLoggedIn.$0]),function(a$33)
+     return Concurrency.Combine(u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:1564480768",[u$1.LastLoggedIn.$0]),function(a$33)
      {
       say((function($17)
       {
@@ -1945,7 +1945,7 @@
   })),null)):m.$==1&&(a$9=NLU.Yes(m.$0),a$9!=null&&a$9.$==1&&(a$10=AnonResponse("addUser",a$9.$0),a$10!=null&&a$10.$==1&&(a$11=Str(a$10.$0[1]),a$11!=null&&a$11.$==1&&(m.$1.$==0&&($4=a$11.$0,true)))))?Concurrency.Start((b$1=null,Concurrency.Delay(function()
   {
    sayRandom(CUI.waitAddPhrases(),"user");
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:-778295643",[$4]),function(a$32)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:-884410062",[$4]),function(a$32)
    {
     return a$32==null?(say((function($17)
     {
@@ -1953,7 +1953,7 @@
      {
       return $17("Sorry I was not able to add the user "+Utils.toSafe($18)+" to the system.");
      };
-    }(Global.id))($4)),Concurrency.Zero()):Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1285714486",[$4]),function(a$33)
+    }(Global.id))($4)),Concurrency.Zero()):Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-959026379",[$4]),function(a$33)
     {
      addProp("user",a$33);
      say((function($17)
@@ -1963,7 +1963,7 @@
        return $17("Hello "+Utils.prettyPrint($18)+", nice to meet you.");
       };
      }(Global.id))($4));
-     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addMessage:1134205589",[$4,"Welcome to Lerna."]),function()
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addMessage:-743437660",[$4,"Welcome to Lerna."]),function()
      {
       return Concurrency.Bind(getUserMessages($4),function()
       {
@@ -1980,7 +1980,7 @@
    };
   }(Global.id))($5)):m.$==1&&(($7=AnonAssert(m.$0),$7!=null&&$7.$==1)&&m.$1.$==0)?say("Could you introduce yourself so we can get started?"):m.$==1&&(a$15=Assert(m.$0),a$15!=null&&a$15.$==1&&(a$16=NLU.Intent$1("hello",a$15.$0),a$16!=null&&a$16.$==1&&(a$16.$0[0]==null&&(a$17=NLU.Entity1Of1("contact",a$16.$0[1]),a$17!=null&&a$17.$==1&&(m.$1.$==0&&($8=a$17.$0,true))))))?Concurrency.Start((b$2=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1285714486",[$8.get_Value()]),function(a$32)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-959026379",[$8.get_Value()]),function(a$32)
    {
     return a$32==null?(say((function($17)
     {
@@ -2008,9 +2008,9 @@
    {
     var a$33;
     a$33=Arrays.get(a$32.answers,0).answer;
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtohtml:-907354463",[a$33]),function(a$34)
+    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtohtml:42527766",[a$33]),function(a$34)
     {
-     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtotext:-907354463",[a$33]),function(a$35)
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtotext:42527766",[a$33]),function(a$35)
      {
       echo(a$34);
       say(a$35);
@@ -2363,7 +2363,7 @@
    Unchecked.Equals(cui[0].Voice,null)?Client.initSpeech(cui):void 0;
    _cui=cui[0];
    Client.ClientState().$===0?Client.set_ClientState(ClientState.ClientReady):void 0;
-   return($3=Text.Blank(command),$3!=null&&$3.$==1)?Client["say'"]("Tell me what you want me to do or ask me a question."):($4=Text.Debug(command),$4!=null&&$4.$==1)?(Client.debug((new AjaxRemotingProvider.New()).Sync("Lerna.Web:Lerna.Web.Server.similarity:161091900",[])),Client.debug((function($7)
+   return($3=Text.Blank(command),$3!=null&&$3.$==1)?Client["say'"]("Tell me what you want me to do or ask me a question."):($4=Text.Debug(command),$4!=null&&$4.$==1)?(Client.debug((new AjaxRemotingProvider.New()).Sync("Lerna.Web:Lerna.Web.Server.tag:-2011173339",[])),Client.debug((function($7)
    {
     return function($8)
     {

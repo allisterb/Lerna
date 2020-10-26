@@ -46,6 +46,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastText.NetWrapper", "..\e
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NativeLibraryManager", "..\ext\NativeLibraryManager2\NativeLibraryManager\NativeLibraryManager.csproj", "{BD012F42-CB2E-4966-A7A9-C16B98361CC8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CherubNLP.UnitTest", "..\..\CherubNLP\CherubNLP.UnitTest\CherubNLP.UnitTest.csproj", "{E9760370-14D9-4542-8269-A247C0BDA747}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +120,14 @@ Global
 		{BD012F42-CB2E-4966-A7A9-C16B98361CC8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD012F42-CB2E-4966-A7A9-C16B98361CC8}.Release|x64.ActiveCfg = Release|Any CPU
 		{BD012F42-CB2E-4966-A7A9-C16B98361CC8}.Release|x64.Build.0 = Release|Any CPU
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Debug|x64.ActiveCfg = Debug|x64
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Debug|x64.Build.0 = Debug|x64
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Release|x64.ActiveCfg = Release|x64
+		{E9760370-14D9-4542-8269-A247C0BDA747}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,6 +142,7 @@ Global
 		{7CE0F015-16EB-45ED-8619-C4829539A66D} = {213BBD4B-143F-4BE2-90F2-61388962C218}
 		{03026CA4-12A2-4F19-B2A2-DB2F490D2EFB} = {213BBD4B-143F-4BE2-90F2-61388962C218}
 		{BD012F42-CB2E-4966-A7A9-C16B98361CC8} = {213BBD4B-143F-4BE2-90F2-61388962C218}
+		{E9760370-14D9-4542-8269-A247C0BDA747} = {213BBD4B-143F-4BE2-90F2-61388962C218}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93DA2F01-DE80-4D2C-964E-B49597D49580}

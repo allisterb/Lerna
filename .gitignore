@@ -345,3 +345,5 @@ healthchecksdb
 /data/*.ftz
 /lib/fasttext.dll
 /lib/libfasttext.so
+/src/Lerna.Web/libfasttext.so
+/src/Lerna.Web/data/conll2000_chunking_train.txt
