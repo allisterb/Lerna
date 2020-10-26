@@ -58,10 +58,11 @@ module Client =
 
     (* Dialogue state *)
 
-    let Utterances = new Stack<Utterance>()
-    let Questions = new Stack<Question>()
-    let Responses = new Stack<string>()
     let Props = new Dictionary<string, obj>()
+    let Output = new Stack<string>()
+    let Questions = new Stack<Question>()
+    let Utterances = new Stack<Utterance>()
+    
     let push (m:Utterance) = Utterances.Push m; Utterances
 
     (* Speech *)
@@ -83,7 +84,7 @@ module Client =
     let say' text = CUI.Say text                
 
     let say text =
-        Responses.Push text
+        Output.Push text
         say' text
         
     let sayVoices() =
@@ -141,7 +142,7 @@ module Client =
             | None, None, None -> ()
             | _ -> 
                 debug <| sprintf "Voice: %A %A %A" intent _trait entity
-                Utterance(intent, _trait, entity) |> push |> Main.update (!cui) Props Questions Responses
+                Utterance(intent, _trait, entity) |> push |> Main.update (!cui) Props Questions Output
         
         /// Terminal interpreter 
         let main (cui: Ref<CUI>) (term:Terminal) (command:string)  =
@@ -170,7 +171,7 @@ module Client =
                     | Text.QuickYes m
                     | Text.QuickNo m -> 
                         debug <| sprintf "Quick Text: %A." m                        
-                        m |> push |> Main.update cui' Props Questions Responses
+                        m |> push |> Main.update cui' Props Questions Output
                         ClientState <- ClientReady
                     (* Use the NLU service for everything else *)
                     | _->         
@@ -180,9 +181,9 @@ module Client =
                                 match meaning with
                                 | Text.HasUtterance m -> 
                                     debug <| sprintf "Text: Intent: %A, Traits: %A, Entities: %A" m.Intent m.Traits m.Entities
-                                    m |> push |> Main.update cui' Props Questions Responses
+                                    m |> push |> Main.update cui' Props Questions Output
                                 | _ -> 
-                                    debug "Text: Did not receive a meaning from the server." 
+                                    debug "Text: Did not receive a meaning from the NLU service." 
                                     say' "Sorry I did not understand what you said."
                             )
                             ClientState <- ClientReady
@@ -191,11 +192,11 @@ module Client =
         let mainOpt =
             Options(
                 Name="Main", 
-                Greetings = "Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech.",
+                Greetings = "Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech or say help for more info.",
                 Prompt =">"
             )       
         Interpreter(main' (ref CUI), (main (ref CUI), mainOpt))
     
     let run() =        
-        Terminal("#term", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
+        Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
         Doc.Empty

@@ -11,15 +11,15 @@ module Study =
     let debug m = ClientExtensions.debug "Study" m
     
     let questions = [ 
-        Question("painSurvey", "Would you like to take a short survey on your pain symptoms so I can understand them better.")
-        Question("painVideo", "Would you like to see a video about pain management that might help you?")
-        Question("medReminder", "Would you like me to add a reminder about your meds so you won't forget them later?")
+        Question("painSurvey", "Would you like to take a short survey on your pain symptoms so I can understand them better.", Verification true)
+        Question("painVideo", "Would you like to see a video about pain management that might help you?", Verification true)
+        Question("medReminder", "Would you like me to add a reminder about your meds so you won't forget them later?", Verification true)
     ]  
     let getQuestion n = questions |> List.tryFind(fun q -> q.Name = n)
     let haveQuestion n = questions |> List.exists(fun q -> q.Name = n)
 
     /// Update the dialogue state
-    let update (cui: CUI) (props: Dictionary<string, obj>) (questions:Stack<Question>) (responses:Stack<string>) (utterances: Stack<Utterance>) =        
+    let update (cui: CUI) (props: Dictionary<string, obj>) (output:Stack<string>) (questions:Stack<Question>) (utterances: Stack<Utterance>) =        
         debug <| sprintf "Starting utterances:%A. Starting questions: %A." utterances questions
        
         (* Audio and text cues *)
@@ -27,12 +27,12 @@ module Study =
         let say' t = cui.Say t
         
         let say t =
-            responses.Push t
+            output.Push t
             say' t
 
         let sayRandom p v  = 
             let t = getRandomPhrase p v
-            responses.Push(t) |> ignore
+            output.Push(t) |> ignore
             cui.Say t
         
         let sayRandom' p = sayRandom p ""

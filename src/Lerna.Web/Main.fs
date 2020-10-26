@@ -11,8 +11,8 @@ module Main =
     let debug m = ClientExtensions.debug "Main" m
     
     let questions = [ 
-        Question("addUser", "Do you want me to add the user $0?")
-        Question("switchUser", "Do you want me to switch to the user $0?")
+        Question("addUser", "Do you want me to add the user $0?", Verification true)
+        Question("switchUser", "Do you want me to switch to the user $0?", Verification true)
     ]  
     let getQuestion n = questions |> List.tryFind(fun q -> q.Name = n)
     let haveQuestion n = questions |> List.exists(fun q -> q.Name = n)
@@ -72,9 +72,16 @@ module Main =
             | _ -> None
          
 
-        let (|Assert|_|) :Utterance -> Utterance option =
+        let (|User|_|) :Utterance -> Utterance option =
             function
             | PropSet "user" m when questions.Count = 0 -> 
+                popu()
+                Some m
+            | _ -> None
+
+        let (|User'|_|) :Utterance -> Utterance option =
+            function
+            | PropNotSet "user" m when questions.Count = 0 -> 
                 popu()
                 Some m
             | _ -> None
@@ -91,7 +98,7 @@ module Main =
                 else Some(m, None)
             | _ -> None
 
-        let (|AnonResponse|_|) (n:string) :Utterance -> (Utterance * obj option) option =
+        let (|Response'|_|) (n:string) :Utterance -> (Utterance * obj option) option =
             function
             | PropNotSet "user" m when haveQuestion n && questions.Count > 0  && questions.Peek().Name = n -> 
                 popu()
@@ -103,12 +110,6 @@ module Main =
                 else Some(m, None)
             | _ -> None
 
-        let (|AnonAssert|_|) :Utterance -> Utterance option =
-            function
-            | PropNotSet "user" m when questions.Count = 0 -> 
-                popu()
-                Some m
-            | _ -> None
 
         let (|Start|_|) :Utterance -> Utterance option=
             function
@@ -171,25 +172,25 @@ module Main =
 
         (* Hello *)
         
-        | Start(AnonAssert(Intent "hello" (_, None)))::[] ->  
+        | Start(User'(Intent "hello" (_, None)))::[] ->  
                 props.Add("started", true)
                 sayRandom' helloPhrases
-        | AnonAssert(Intent "hello" (_, None))::[] -> say "Hello, tell me your name to get started."
+        | User'(Intent "hello" (_, None))::[] -> say "Hello, tell me your name to get started."
 
         (* User login *)
         
-        | AnonAssert(Intent "hello" (_, Entity1Of1 "contact" u))::[] -> loginUser u.Value
+        | User'(Intent "hello" (_, Entity1Of1 "contact" u))::[] -> loginUser u.Value
         
         (* User add *)
         
-        | Yes(AnonResponse "addUser" (_, Str user))::[] -> addUser user
-        | No(AnonResponse "addUser" (_, Str user))::[] -> say <| sprintf "Ok I did not add the user %s. But you must login for me to help you." user
+        | Yes(Response' "addUser" (_, Str user))::[] -> addUser user
+        | No(Response' "addUser" (_, Str user))::[] -> say <| sprintf "Ok I did not add the user %s. But you must login for me to help you." user
 
-        | AnonAssert(_) ::[] -> say "Could you introduce yourself so we can get started?"
+        | User'(_) ::[] -> say "Could you introduce yourself so we can get started?"
 
         (* User switch *)
         
-        | Assert(Intent "hello" (None, Entity1Of1 "contact" u))::[] -> 
+        | User(Intent "hello" (None, Entity1Of1 "contact" u))::[] -> 
             async {
                 match! Server.getUser u.Value with
                 | Some user -> ask "switchUser" user.Name
@@ -201,18 +202,18 @@ module Main =
         | No(Response "switchUser" (_, Str user))::[] -> 
             say <| sprintf "Ok I did not switch to user %s." user
         
-        | Assert(Intent "studyjournal" (_, _))::[] ->
+        | User(Intent "studyjournal" (_, _))::[] ->
             echo """<img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.YSxy_C2rlS83dQdUOq9MqwHaFB%26pid%3DApi&f=1"/>"""
             say "Good job! You are right on track with the rest of students in your cohort. Keep it up."
         (* Reference *)
 
-        | Assert(Intent "nextclass" _)::[] ->
+        | User(Intent "nextclass" _)::[] ->
             echo """<iframe src="https://calendar.google.com/calendar/embed?src=cocnrm4290919hobq1f5he7leg%40group.calendar.google.com&ctz=America%2FPort_of_Spain" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>"""
             say "Your next chemistry class is on Monday at 8:30AM."
         
         (* Reference *)
 
-        | Assert(Intent "reference" (_, Entity1Of1 "term" t))::[] ->
+        | User(Intent "reference" (_, Entity1Of1 "term" t))::[] ->
             async {
                 let! answer = Lerna.NLU.QnAMaker.getAnswer t.Value
                 let a = answer.answers.[0].answer
@@ -224,7 +225,7 @@ module Main =
 
         (* Quiz *)
 
-        | Assert(Intent "quiz" (_, Entity1Of1 "term" t))::[] ->
+        | User(Intent "quiz" (_, Entity1Of1 "term" t))::[] ->
             async {
                 echo "What is the most accurate definition of an element?<br>1. A bond between molecules<br>2. A substance that cannot be broken down into simpler components.<br>3. A combination of atoms.<br> 4. A part of water."
                 say "What is the most accurate definition of an element? 1. A bond between molecules. 2. A substance that cannot be broken down into simpler components. 3. A combination of atoms 4. A part of water."

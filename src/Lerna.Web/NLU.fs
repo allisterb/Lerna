@@ -35,12 +35,17 @@ module NLU =
 
     type Utterance' = Trait list option * Entity list option
 
-    type Question = Question of string * string
-    with 
-        member x.Name = let (Question(n, _)) = x in n 
-        member x.Text = let (Question(_, t)) = x in t
+    type Question = Question of string * string * QuestionType with 
+        member x.Name = let (Question(n, _, _)) = x in n 
+        member x.Text = let (Question(_, t, _)) = x in t
+        member x.Type = let (Question(_, _, ty)) = x in ty
         override x.ToString() = sprintf "Name: %s Text: %s" x.Name x.Text
-
+    
+    and QuestionType =
+    | Verification of bool
+    | Disjunctive of string * string
+    | ConceptCompletion of string
+    
     let (|Intent|_|) n :Utterance -> Utterance' option= 
         function
         | m when m.Intent.IsSome && m.Intent.Value.Name = n -> (m.Traits, m.Entities) |> Some
@@ -75,15 +80,13 @@ module NLU =
     let (|Yes|_|) :Utterance -> Utterance option= 
         function 
         | Intent "yes" (None, None) as m -> Some m
-        | Intent "yesresponse" (None, None) as m -> Some m
-        | Intent "YesResponse" (None, None) as m -> Some m
+        | Intent "verify" (None, None) as m -> Some m
         |  _ -> None
 
     let (|No|_|) :Utterance -> Utterance option= 
         function 
         | Intent "no" (None, None) as m  -> Some m
-        | Intent "noresponse" (None, None) as m  -> Some m
-        | Intent "NoResponse" (None, None) as m  -> Some m
+        | Intent "reject" (None, None) as m -> Some m
         |  _ -> None
 
     [<RequireQualifiedAccess>]
@@ -229,7 +232,7 @@ module NLU =
                 member x.Confidence = let (_, c, _) = x.Unwrap in c
                 member x.Value = let (_, _, v) = x.Unwrap in v
 
-        let private witapi = new WitApi("MROJG5PKG6G7Q4SVXN7HSIGSIZZ5DI6W")
+        let private witapi = new WitApi("Y7GDBZV33TW2MLC3BQB2CJHZV5MKWXQU")
          
         let private entity_types = ["wit$contact:contact"; "wit$datetime:datetime"; "subject:subject"; "term:term"]
 

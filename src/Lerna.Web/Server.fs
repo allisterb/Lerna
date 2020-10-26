@@ -81,7 +81,7 @@ module Server =
         //    |], "dbpedia.ft")
     [<Rpc>]
     let tag() =
-        let words = tokenizer.Tokenize(sentence = "first boil a cup of water then add coffee beans.")
+        let words = tokenizer.Tokenize(sentence = "boil a cup of water")
         do tagger.Tag(new Sentence (Words = words), taggerOptions);
         words
 
