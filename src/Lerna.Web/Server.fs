@@ -1,6 +1,7 @@
 namespace Lerna.Web
 
 open System
+open System.IO
 open System.Collections.Generic;
 open System.Linq
 
@@ -9,6 +10,8 @@ open FSharp.Control
 open WebSharper
 open Npgsql.FSharp
 open Humanizer
+open CherubNLP
+open FastText.NetWrapper
 
 open Lerna
 open Lerna.Models
@@ -25,6 +28,18 @@ module Server =
         |> Sql.formatConnectionString
         |> Sql.connect
 
+    let private fasttext = new FastTextWrapper(false)
+    do fasttext.LoadModel(Path.Combine("data", "dbpedia.ftz"))
+
+    [<Rpc>]
+    let similarity() = 
+        fasttext.GetSentenceVector("An element is a substance that cannot be broken down into any other substance.")
+                
+            
+        
+        //FastText.NetWrapper.FastTextWrapper("An element is a substance that cannot be broken down into any other substance.",  [|
+        //        "An element is"    
+        //    |], "dbpedia.ft")
     [<Rpc>]
     let humanize(date:DateTime) = async { return date.Humanize() }
 
@@ -46,7 +61,7 @@ module Server =
         |> Async.map(
             function 
             | Ok u  -> (if u.Length > 0 then infof "Retrieved user {0} from database." [u.Head.Name]; Some u.Head else None) 
-            | Error exn -> errex "Error retrieving user {0} to database." exn [user]; None)
+            | Error exn -> errex "Error retrieving user {0} from database." exn [user]; None)
 
     [<Rpc>]
     let addUser (user:string) : Async<unit Option> =

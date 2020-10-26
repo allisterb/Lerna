@@ -155,6 +155,7 @@ module Client =
             (* Quick commands *)
             | Text.Blank -> say' "Tell me what you want me to do or ask me a question."
             | Text.Debug ->  
+                debug <| Server.similarity()
                 debug <| sprintf "Utterances: %A" Utterances
                 debug <| sprintf "Questions: %A" Questions
             | Text.Voices -> sayVoices()
