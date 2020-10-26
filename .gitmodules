@@ -1,0 +1,6 @@
+[submodule "ext/FastText.NetWrapper"]
+	path = ext/FastText.NetWrapper
+	url = https://github.com/allisterb/FastText.NetWrapper.git
+[submodule "ext/NativeLibraryManager2"]
+	path = ext/NativeLibraryManager2
+	url = https://github.com/allisterb/NativeLibraryManager.git

@@ -342,3 +342,6 @@ healthchecksdb
 /deploy/oc-deploy.cmd
 /build/oc-port-forward.cmd
 **/*.ionide/
+/data/*.ftz
+/lib/fasttext.dll
+/lib/libfasttext.so
