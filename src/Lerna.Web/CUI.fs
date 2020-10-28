@@ -22,7 +22,7 @@ module CUI =
 
     type ClientState = ClientNotInitialzed | ClientReady | ClientUnderstand 
 
-    type Interpreter = Interpreter of (SMApp.Microphone.Mic -> (obj*obj) -> unit) * ((SMApp.JQueryTerminal.Terminal->string->unit) * SMApp.JQueryTerminal.Options)
+    type Interpreter = Interpreter of ((obj*obj) -> unit) * ((SMApp.JQueryTerminal.Terminal->string->unit) * SMApp.JQueryTerminal.Options)
         with
         member x.Unwrap = match x with | Interpreter(v, (i, o)) -> v, i, o
         member x.Voice = let v, i, o = x.Unwrap in v

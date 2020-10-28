@@ -28,7 +28,7 @@ module Templates =
 module Site =
     let HomePage ctx =
         Templates.Main ctx Home "Lerna" [
-            div [attr.id "main"] [
+            div [attr.id "term"] [
                 client <@ Client.run() @>                
             ]
         ]

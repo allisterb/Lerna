@@ -69,15 +69,14 @@ module Client =
 
     let synth = Window.SpeechSynthesis
     
-    let initSpeech((cui: Ref<CUI>)) =
+    let initSpeech() =
         let voices = synth.GetVoices() |> toArray         
         if voices.Length > 0 then
             let v = voices |> Array.find (fun v -> v.Default) in 
-            cui := { !cui with Voice = Some v }  
-            let cui' = !cui
-            debug <| sprintf "Using browser speech synthesis voice %s." cui'.Voice.Value.Name
-            cui'.Avatar.NativeVoice <- true
-            cui'.Avatar.NativeVoiceName <- v.Name
+            CUI <- { CUI with Voice = Some v }  
+            debug <| sprintf "Using browser speech synthesis voice %s." CUI.Voice.Value.Name
+            CUI.Avatar.NativeVoice <- true
+            CUI.Avatar.NativeVoiceName <- v.Name
         else  
             echo "No browser speech synthesis voice is available. Falling back to CMU TTS."
 
@@ -96,9 +95,9 @@ module Client =
     
     (* Mic *)
 
-    let initMic (cui: Ref<CUI>) interpret  =
-        cui := { !cui with Mic = Some(new Mic()) }
-        let mic = (!cui).Mic.Value
+    let initMic interpret  =
+        CUI <- { CUI with Mic = Some(new Mic()) }
+        let mic = CUI.Mic.Value
         do mic.onConnecting <- (fun _ -> MicState <- MicConnecting; debug "Mic connecting...")
         do mic.onDisconnected <- (fun _ -> MicState <- MicDisconnected;debug "Mic disconnected.")
         do mic.onAudioStart <- (fun _ -> MicState <- MicAudioStart;debug "Mic audio start...")
@@ -110,7 +109,7 @@ module Client =
             | ClientReady ->
                 if not (isNull i || isNull e) then 
                     MicState <- MicResult(i,e) 
-                    debug <| sprintf "Mic result: %A %A." i e; interpret cui mic (i,e)
+                    debug <| sprintf "Mic result: %A %A." i e; interpret (i,e)
                 else 
                     debug "Mic: No result returned."        
             | ClientUnderstand -> echo "I'm still trying to understand what you said before."
@@ -123,7 +122,7 @@ module Client =
     /// Main interpreter
     let Main =             
         /// Mic interpreter
-        let main' (cui:Ref<CUI>) (_:Mic) (command:obj*obj) =
+        let main' (command:obj*obj) =
             let i, e = command
             debug <| sprintf "Voice: %A %A" i e
             let intent = 
@@ -145,12 +144,12 @@ module Client =
                 Utterance(intent, _trait, entity) |> push |> Main.update 
         
         /// Terminal interpreter 
-        let main (cui: Ref<CUI>) (term:Terminal) (command:string)  =
-            cui := { CUI with Term = term }
+        let main (term:Terminal) (command:string)  =
+            CUI <- { CUI with Term = term }
             do 
-                if (!cui).Mic = None then initMic cui main'
-                if (!cui).Voice = None then initSpeech cui
-            let cui' = !cui
+                if CUI.Mic = None then initMic main'
+                if CUI.Voice = None then initSpeech ()
+            
             do if ClientState = ClientNotInitialzed then ClientState <- ClientReady
             match command with
             (* Quick commands *)
@@ -187,7 +186,7 @@ module Client =
                                     say' "Sorry I did not understand what you said."
                             )
                             ClientState <- ClientReady
-                        } |> cui'.Wait
+                        } |> CUI.Wait
                 | ClientNotInitialzed -> error "Client is not initialized."
         let mainOpt =
             Options(
@@ -195,8 +194,8 @@ module Client =
                 Greetings = "Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech or say help for more info.",
                 Prompt =">"
             )       
-        Interpreter(main' (ref CUI), (main (ref CUI), mainOpt))
+        Interpreter(main', (main, mainOpt))
     
     let run() =        
-        Terminal("#main", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
+        Terminal("#term", ThisAction<Terminal, string>(fun term command -> Main.Text term command), Main.Options) |> ignore
         Doc.Empty
