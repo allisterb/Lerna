@@ -8,108 +8,51 @@ open Lerna.Models
 
 [<JavaScript>]
 module Main =
-    let debug m = ClientExtensions.debug "Main" m
+    let name = "Main"
+    let debug m = ClientExtensions.debug name m
     
-    let questions = [ 
+    let moduleQuestions = [ 
         Question("addUser", "Do you want me to add the user $0?", Verification true)
         Question("switchUser", "Do you want me to switch to the user $0?", Verification true)
     ]  
-    let getQuestion n = questions |> List.tryFind(fun q -> q.Name = n)
-    let haveQuestion n = questions |> List.exists(fun q -> q.Name = n)
+    let getQuestion n = Dialogue.getQuestion moduleQuestions
+    let haveQuestion n = Dialogue.haveQuestion moduleQuestions
 
     /// Update the dialogue state
-    let update (cui: CUI) (props: Dictionary<string, obj>) (questions:Stack<Question>) (responses:Stack<string>) (utterances: Stack<Utterance>) =        
-        debug <| sprintf "Starting utterances:%A. Starting questions: %A." utterances questions
+    let update d =        
+        let (Dialogue.Dialogue(cui, props, dialogueQuestions, output, utterances)) = d
+        debug <| sprintf "Starting utterances:%A. Starting questions: %A." utterances dialogueQuestions
        
-        (* Audio and text cues *)
+        let echo = Dialogue.echo d
+        let say' = Dialogue.say' d
+        let say = Dialogue.say d
+        let sayRandom = Dialogue.sayRandom d
+        let sayRandom' = Dialogue.sayRandom' d
 
-        let echo t = cui.EchoHtml' t
-
-        let say' t = cui.Say t
-        
-        let say t =
-            responses.Push t
-            say' t
-
-
-        let sayRandom p v  = 
-            let t = getRandomPhrase p v
-            responses.Push(t) |> ignore
-            cui.Say t
-        
-        let sayRandom' p = sayRandom p ""
-        
         (* Manage the dialogue state elements*)
 
-        let haveProp k = props.ContainsKey k
-        let addProp k v = props.Add(k, v)
-        let deleteProp k = props.Remove k |> ignore
-        let prop k :'a = props.[k] :?> 'a
+        let haveProp = Dialogue.haveProp d
+        let addProp  = Dialogue.addProp d
+        let deleteProp = Dialogue.deleteProp d
+        let prop  = Dialogue.prop d
         let user() :User = prop "user"
-        
-        let popu() = utterances.Pop() |> ignore
-        let popq() = questions.Pop() |> ignore
-        let pushq (n:string) = 
-            match getQuestion n with
-            | Some q -> questions.Push q
-            | None -> failwithf "No such question: %s" n
-        let ask q v =
-            addProp q v
-            pushq q; 
-            debug <| sprintf "Added question: %A." (questions.Peek()) 
-            let _q = getQuestion q in say <| replace_tok "$0" v _q.Value.Text
-            
-        (* Dialogue patterns *)
 
-        let (|PropSet|_|) (n:string) :Utterance -> Utterance option =
-            function
-            | m when haveProp n -> Some m
-            | _ -> None
+        let pushu  = Dialogue.pushu d
+        let popu() = Dialogue.popu d
+        let popq() = Dialogue.popq d
+        let pushq = Dialogue.pushq d moduleQuestions
+        let ask = Dialogue.ask d moduleQuestions
+    
+        (* Base dialogue patterns *)
 
-        let (|PropNotSet|_|) (n:string) :Utterance -> Utterance option =
-            function
-            | m when not (haveProp n) -> Some m
-            | _ -> None
-         
+        let (|PropSet|_|) = Dialogue.(|PropSet_|_|) d
+        let (|PropNotSet|_|) = Dialogue.(|PropNotSet_|_|) d
+        let (|User|_|) = Dialogue.(|User_|_|) d
+        let (|User'|_|) = Dialogue.(|User'_|_|) d
+        let (|Response|_|) = Dialogue.(|Response_|_|) d moduleQuestions
+        let (|Response'|_|) = Dialogue.(|Response'_|_|) d moduleQuestions
 
-        let (|User|_|) :Utterance -> Utterance option =
-            function
-            | PropSet "user" m when questions.Count = 0 -> 
-                popu()
-                Some m
-            | _ -> None
-
-        let (|User'|_|) :Utterance -> Utterance option =
-            function
-            | PropNotSet "user" m when questions.Count = 0 -> 
-                popu()
-                Some m
-            | _ -> None
-
-        let (|Response|_|) (n:string) :Utterance -> (Utterance * obj option) option =
-            function
-            | PropSet "user" m when haveQuestion n && questions.Count > 0  && questions.Peek().Name = n -> 
-                popu()
-                popq()
-                if haveProp n then
-                    let d = props.[n]
-                    deleteProp n
-                    Some(m, Some d)
-                else Some(m, None)
-            | _ -> None
-
-        let (|Response'|_|) (n:string) :Utterance -> (Utterance * obj option) option =
-            function
-            | PropNotSet "user" m when haveQuestion n && questions.Count > 0  && questions.Peek().Name = n -> 
-                popu()
-                popq()
-                if haveProp n then
-                    let d = props.[n]
-                    deleteProp n
-                    Some(m, Some d)
-                else Some(m, None)
-            | _ -> None
-
+        (* Module dialogue patterns *) 
 
         let (|Start|_|) :Utterance -> Utterance option=
             function
@@ -121,7 +64,7 @@ module Main =
             | Some s when (s :? string) -> Some (s :?> string)
             | _ -> None
 
-        (* User functions *)
+        (* Module functions *)
         
         let getUserMessages u = 
             async {
@@ -208,7 +151,7 @@ module Main =
         
         | User'(Intent "select_module" (_, Entity1OfAny "term" e))::[]  -> 
             utterances.Push (Utterance(Some (Intent("start_module", Some 1.0f)), None, None))
-            ITSTutorial.update cui props questions responses utterances 
+            ITSTutorial.update d 
         
         (* Schedule *)
 
@@ -238,12 +181,6 @@ module Main =
             } |> Async.Start
         | _ -> 
             popu()
-            debug "Main interpreter did not understand utterance."
-            say "Sorry I didn't understand what you meant."
-            if questions.Count > 0 then 
-                let q = Seq.item 0 questions in 
-                if haveProp q.Name then 
-                    say <| replace_tok "$0" (props.[q.Name] :?> string) q.Text
-                else say q.Text
+            Dialogue.noUnderstand d debug name
 
-        debug <| sprintf "Ending utterances: %A. Ending questions:%A." utterances questions
+        debug <| sprintf "Ending utterances: %A. Ending questions:%A." utterances dialogueQuestions

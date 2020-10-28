@@ -1770,26 +1770,15 @@
   });
  };
  Dialogue$1=Dialogue.Dialogue=Runtime.Class({
-  "get_|PropSet|_|":function()
-  {
-   return{
-    $:1,
-    $0:null
-   };
-  },
   get_Utterances:function()
-  {
-   return this.$5;
-  },
-  get_Output:function()
   {
    return this.$4;
   },
-  get_DialogueQuestions:function()
+  get_Output:function()
   {
    return this.$3;
   },
-  get_ModuleQuestions:function()
+  get_DialogueQuestions:function()
   {
    return this.$2;
   },
@@ -1802,10 +1791,10 @@
    return this.$0;
   }
  },null,Dialogue$1);
- Dialogue["Response'_"]=function(d,n,a)
+ Dialogue["Response'_"]=function(d,moduleQuestions,n,a)
  {
   var $1,a$1,v;
-  return(a$1=Dialogue.PropNotSet_(d,"user",a),a$1!=null&&a$1.$==1&&(Dialogue.haveQuestion(d,n)&&d.get_DialogueQuestions().length>0&&(d.get_DialogueQuestions())[0].get_Name()===n&&($1=a$1.$0,true)))?(Dialogue.popu(d),Dialogue.popq(d),Dialogue.haveProp(d,n)?(v=d.get_Props().get_Item(n),(Dialogue.deleteProp(d,n),{
+  return(a$1=Dialogue.PropNotSet_(d,"user",a),a$1!=null&&a$1.$==1&&(Dialogue.haveQuestion(moduleQuestions,n)&&d.get_DialogueQuestions().length>0&&(d.get_DialogueQuestions())[0].get_Name()===n&&($1=a$1.$0,true)))?(Dialogue.popu(d),Dialogue.popq(d),Dialogue.haveProp(d,n)?(v=d.get_Props().get_Item(n),(Dialogue.deleteProp(d,n),{
    $:1,
    $0:[$1,{
     $:1,
@@ -1816,10 +1805,10 @@
    $0:[$1,null]
   }):null;
  };
- Dialogue.Response_=function(d,n,a)
+ Dialogue.Response_=function(d,moduleQuestions,n,a)
  {
   var $1,a$1,v;
-  return(a$1=Dialogue.PropSet_(d,"user",a),a$1!=null&&a$1.$==1&&(Dialogue.haveQuestion(d,n)&&d.get_DialogueQuestions().length>0&&(d.get_DialogueQuestions())[0].get_Name()===n&&($1=a$1.$0,true)))?(Dialogue.popu(d),Dialogue.popq(d),Dialogue.haveProp(d,n)?(v=d.get_Props().get_Item(n),(Dialogue.deleteProp(d,n),{
+  return(a$1=Dialogue.PropSet_(d,"user",a),a$1!=null&&a$1.$==1&&(Dialogue.haveQuestion(moduleQuestions,n)&&d.get_DialogueQuestions().length>0&&(d.get_DialogueQuestions())[0].get_Name()===n&&($1=a$1.$0,true)))?(Dialogue.popu(d),Dialogue.popq(d),Dialogue.haveProp(d,n)?(v=d.get_Props().get_Item(n),(Dialogue.deleteProp(d,n),{
    $:1,
    $0:[$1,{
     $:1,
@@ -1860,23 +1849,36 @@
    $0:a
   }:null;
  };
- Dialogue.ask=function(d,q,v)
+ Dialogue.noUnderstand=function(d,debug,name)
+ {
+  var q;
+  debug((function($1)
+  {
+   return function($2)
+   {
+    return $1(Utils.toSafe($2)+" interpreter did not understand utterance.");
+   };
+  }(Global.id))(name));
+  Dialogue.say(d,"Sorry I didn't understand what you meant.");
+  d.get_DialogueQuestions().length>0?(q=Seq.nth(0,d.get_DialogueQuestions()),Dialogue.haveProp(d,q.get_Name())?Dialogue.say(d,NLG.replace_tok("$0",d.get_Props().get_Item(q.get_Name()),q.get_Text())):Dialogue.say(d,q.get_Text())):void 0;
+ };
+ Dialogue.ask=function(d,moduleQuestions,q,v)
  {
   Dialogue.addProp(d,q,v);
-  Dialogue.pushq(d,q);
-  Dialogue.say(d,NLG.replace_tok("$0",v,Dialogue.getQuestion(d,q).$0.get_Text()));
+  Dialogue.pushq(d,moduleQuestions,q);
+  Dialogue.say(d,NLG.replace_tok("$0",v,Dialogue.getQuestion(moduleQuestions,q).$0.get_Text()));
  };
- Dialogue.pushq=function(d,n)
+ Dialogue.pushq=function(d,moduleQuestions,questionName)
  {
   var m;
-  m=Dialogue.getQuestion(d,n);
+  m=Dialogue.getQuestion(moduleQuestions,questionName);
   m==null?(function($1)
   {
    return function($2)
    {
     return $1("No such question: "+Utils.toSafe($2));
    };
-  }(Operators.FailWith))(n):d.get_DialogueQuestions().unshift(m.$0);
+  }(Operators.FailWith))(questionName):d.get_DialogueQuestions().unshift(m.$0);
  };
  Dialogue.popq=function(d)
  {
@@ -1890,19 +1892,19 @@
  {
   d.get_Utterances().unshift(m);
  };
- Dialogue.haveQuestion=function(d,n)
+ Dialogue.haveQuestion=function(q,n)
  {
-  return List.exists(function(q)
+  return List.exists(function(q$1)
   {
-   return q.get_Name()===n;
-  },d.get_ModuleQuestions());
+   return q$1.get_Name()===n;
+  },q);
  };
- Dialogue.getQuestion=function(d,n)
+ Dialogue.getQuestion=function(q,n)
  {
-  return Seq.tryFind(function(q)
+  return Seq.tryFind(function(q$1)
   {
-   return q.get_Name()===n;
-  },d.get_ModuleQuestions());
+   return q$1.get_Name()===n;
+  },q);
  };
  Dialogue.prop=function(d,k)
  {
@@ -1944,9 +1946,9 @@
  {
   (d.get_Cui())["EchoHtml'"](t);
  };
- ITSTutorial.update=function(cui,props,questions,responses,utterances)
+ ITSTutorial.update=function(d)
  {
-  var d,m,$1,a,$2,a$1,a$2,a$3,q;
+  var utterances,dialogueQuestions,m,$1,a,$2,a$1,a$2,a$3,q;
   function say(t)
   {
    Dialogue.say(d,t);
@@ -1955,25 +1957,28 @@
   {
    return Dialogue["User'_"](d,a$4);
   }
-  d=new Dialogue$1({
-   $:0,
-   $0:cui,
-   $1:props,
-   $2:ITSTutorial.moduleQuestions(),
-   $3:questions,
-   $4:responses,
-   $5:utterances
-  });
+  utterances=d.$4;
+  dialogueQuestions=d.$2;
   ITSTutorial.debug((((Runtime.Curried3(function($3,$4,$5)
   {
    return $3("Starting utterances:"+Utils.prettyPrint($4)+". Starting questions: "+Utils.prettyPrint($5)+".");
-  }))(Global.id))(utterances))(questions));
+  }))(Global.id))(utterances))(dialogueQuestions));
   m=List.ofSeq(Seq.take(utterances.length>=5?5:utterances.length,utterances));
-  m.$==1&&(a=_User(m.$0),a!=null&&a.$==1&&(($2=NLU.Intent$1("start_module",a.$0),$2!=null&&$2.$==1)&&(m.$1.$==1&&(a$1=_User(m.$1.$0),a$1!=null&&a$1.$==1&&(a$2=NLU.Intent$1("select_module",a$1.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Entity1OfAny("term",a$2.$0[1]),a$3!=null&&a$3.$==1&&($1=a$3.$0,true)))))))?say("starting tutorial"):(Dialogue.popu(d),ITSTutorial.debug("Main interpreter did not understand utterance."),say("Sorry I didn't understand what you meant."),questions.length>0?(q=Seq.nth(0,questions),Dialogue.haveProp(d,q.get_Name())?say(NLG.replace_tok("$0",props.get_Item(q.get_Name()),q.get_Text())):say(q.get_Text())):void 0);
+  m.$==1&&(a=_User(m.$0),a!=null&&a.$==1&&(($2=NLU.Intent$1("start_module",a.$0),$2!=null&&$2.$==1)&&(m.$1.$==1&&(a$1=_User(m.$1.$0),a$1!=null&&a$1.$==1&&(a$2=NLU.Intent$1("select_module",a$1.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Entity1OfAny("term",a$2.$0[1]),a$3!=null&&a$3.$==1&&($1=a$3.$0,true)))))))?say("starting tutorial"):(Dialogue.popu(d),ITSTutorial.debug("Main interpreter did not understand utterance."),say("Sorry I didn't understand what you meant."),dialogueQuestions.length>0?(q=Seq.nth(0,d.get_DialogueQuestions()),Dialogue.haveProp(d,q.get_Name())?say(NLG.replace_tok("$0",d.get_Props().get_Item(q.get_Name()),q.get_Text())):say(q.get_Text())):void 0);
   ITSTutorial.debug((((Runtime.Curried3(function($3,$4,$5)
   {
    return $3("Ending utterances: "+Utils.prettyPrint($4)+". Ending questions:"+Utils.prettyPrint($5)+".");
-  }))(Global.id))(utterances))(questions));
+  }))(Global.id))(utterances))(dialogueQuestions));
+ };
+ ITSTutorial.haveQuestion=function()
+ {
+  SC$4.$cctor();
+  return SC$4.haveQuestion;
+ };
+ ITSTutorial.getQuestion=function()
+ {
+  SC$4.$cctor();
+  return SC$4.getQuestion;
  };
  ITSTutorial.moduleQuestions=function()
  {
@@ -1982,11 +1987,17 @@
  };
  ITSTutorial.debug=function(m)
  {
-  ClientExtensions.debug("Main",m);
+  ClientExtensions.debug(ITSTutorial.name(),m);
+ };
+ ITSTutorial.name=function()
+ {
+  SC$4.$cctor();
+  return SC$4.name;
  };
  SC$4.$cctor=function()
  {
   SC$4.$cctor=Global.ignore;
+  SC$4.name="Tutorial";
   SC$4.moduleQuestions=List.ofArray([new Question({
    $:0,
    $0:"addUser",
@@ -2004,132 +2015,53 @@
     $0:true
    }
   })]);
+  SC$4.getQuestion=function(n)
+  {
+   return Dialogue.getQuestion(ITSTutorial.moduleQuestions(),n);
+  };
+  SC$4.haveQuestion=function(n)
+  {
+   return Dialogue.haveQuestion(ITSTutorial.moduleQuestions(),n);
+  };
  };
- Main.update=function(cui,props,questions,responses,utterances)
+ Main.update=function(d)
  {
-  var m,$1,a,a$1,a$2,a$3,$2,a$4,a$5,$3,a$6,a$7,a$8,u,b,$4,a$9,a$10,a$11,b$1,$5,a$12,a$13,a$14,$6,$7,$8,a$15,a$16,a$17,b$2,$9,a$18,a$19,a$20,$10,a$21,a$22,a$23,$11,a$24,$12,$13,a$25,a$26,a$27,$14,a$28,$15,$16,a$29,a$30,a$31,b$3,$17,a$32,a$33,a$34,b$4,q;
+  var utterances,props,dialogueQuestions,m,$1,a,a$1,a$2,a$3,$2,a$4,a$5,$3,a$6,a$7,a$8,u,b,$4,a$9,a$10,a$11,b$1,$5,a$12,a$13,a$14,$6,$7,$8,a$15,a$16,a$17,b$2,$9,a$18,a$19,a$20,$10,a$21,a$22,a$23,$11,a$24,$12,$13,a$25,a$26,a$27,$14,a$28,$15,$16,a$29,a$30,a$31,b$3,$17,a$32,a$33,a$34,b$4;
   function echo(t)
   {
-   cui["EchoHtml'"](t);
-  }
-  function _say(t)
-  {
-   cui.Say(t);
+   Dialogue.echo(d,t);
   }
   function say(t)
   {
-   responses.unshift(t);
-   _say(t);
+   Dialogue.say(d,t);
   }
   function sayRandom(p,v)
   {
-   var t;
-   t=NLG.getRandomPhrase(p,v);
-   responses.unshift(t);
-   return cui.Say(t);
-  }
-  function haveProp(k)
-  {
-   return props.ContainsKey(k);
+   return Dialogue.sayRandom(d,p,v);
   }
   function addProp(k,v)
   {
-   return props.Add(k,v);
+   return Dialogue.addProp(d,k,v);
   }
-  function deleteProp(k)
+  function ask(q,v)
   {
-   props.Remove(k);
-  }
-  function popu()
-  {
-   utterances.shift();
-  }
-  function popq()
-  {
-   questions.shift();
-  }
-  function pushq(n)
-  {
-   var m$1;
-   m$1=Main.getQuestion(n);
-   m$1==null?(function($18)
-   {
-    return function($19)
-    {
-     return $18("No such question: "+Utils.toSafe($19));
-    };
-   }(Operators.FailWith))(n):questions.unshift(m$1.$0);
-  }
-  function ask(q$1,v)
-  {
-   addProp(q$1,v);
-   pushq(q$1);
-   Main.debug((function($18)
-   {
-    return function($19)
-    {
-     return $18("Added question: "+Lerna$Web_GeneratedPrintf.p$8($19)+".");
-    };
-   }(Global.id))(questions[0]));
-   return say(NLG.replace_tok("$0",v,Main.getQuestion(q$1).$0.get_Text()));
-  }
-  function PropSet(n,a$35)
-  {
-   return haveProp(n)?{
-    $:1,
-    $0:a$35
-   }:null;
-  }
-  function PropNotSet(n,a$35)
-  {
-   return!haveProp(n)?{
-    $:1,
-    $0:a$35
-   }:null;
+   return Dialogue.ask(d,Main.moduleQuestions(),q,v);
   }
   function User$1(a$35)
   {
-   var $18,a$36;
-   return(a$36=PropSet("user",a$35),a$36!=null&&a$36.$==1&&(questions.length===0&&($18=a$36.$0,true)))?(popu(),{
-    $:1,
-    $0:$18
-   }):null;
+   return Dialogue.User_(d,a$35);
   }
   function _User(a$35)
   {
-   var $18,a$36;
-   return(a$36=PropNotSet("user",a$35),a$36!=null&&a$36.$==1&&(questions.length===0&&($18=a$36.$0,true)))?(popu(),{
-    $:1,
-    $0:$18
-   }):null;
+   return Dialogue["User'_"](d,a$35);
   }
   function Response(n,a$35)
   {
-   var $18,a$36,d;
-   return(a$36=PropSet("user",a$35),a$36!=null&&a$36.$==1&&(Main.haveQuestion(n)&&questions.length>0&&questions[0].get_Name()===n&&($18=a$36.$0,true)))?(popu(),popq(),haveProp(n)?(d=props.get_Item(n),(deleteProp(n),{
-    $:1,
-    $0:[$18,{
-     $:1,
-     $0:d
-    }]
-   })):{
-    $:1,
-    $0:[$18,null]
-   }):null;
+   return Dialogue.Response_(d,Main.moduleQuestions(),n,a$35);
   }
   function _Response(n,a$35)
   {
-   var $18,a$36,d;
-   return(a$36=PropNotSet("user",a$35),a$36!=null&&a$36.$==1&&(Main.haveQuestion(n)&&questions.length>0&&questions[0].get_Name()===n&&($18=a$36.$0,true)))?(popu(),popq(),haveProp(n)?(d=props.get_Item(n),(deleteProp(n),{
-    $:1,
-    $0:[$18,{
-     $:1,
-     $0:d
-    }]
-   })):{
-    $:1,
-    $0:[$18,null]
-   }):null;
+   return Dialogue["Response'_"](d,Main.moduleQuestions(),n,a$35);
   }
   function Str(a$35)
   {
@@ -2145,7 +2077,7 @@
    b$5=null;
    return Concurrency.Delay(function()
    {
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getMessages:1908451522",[u$1]),function(a$35)
+    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getMessages:-1548335942",[u$1]),function(a$35)
     {
      props.Add("msgs",a$35);
      return a$35!=null&&a$35.$0.get_Length()>0?(say((((Runtime.Curried3(function($18,$19,$20)
@@ -2155,17 +2087,20 @@
     });
    });
   }
+  utterances=d.$4;
+  props=d.$1;
+  dialogueQuestions=d.$2;
   Main.debug((((Runtime.Curried3(function($18,$19,$20)
   {
    return $18("Starting utterances:"+Utils.prettyPrint($19)+". Starting questions: "+Utils.prettyPrint($20)+".");
-  }))(Global.id))(utterances))(questions));
+  }))(Global.id))(utterances))(dialogueQuestions));
   m=List.ofSeq(Seq.take(utterances.length>=5?5:utterances.length,utterances));
-  m.$==1&&(a=(a$1=PropNotSet("started",m.$0),a$1!=null&&a$1.$==1?{
+  m.$==1&&(a=(a$1=Dialogue.PropNotSet_(d,"started",m.$0),a$1!=null&&a$1.$==1?{
    $:1,
    $0:a$1.$0
-  }:null),a!=null&&a.$==1&&(a$2=_User(a.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Intent$1("hello",a$2.$0),a$3!=null&&a$3.$==1&&(a$3.$0[1]==null&&m.$1.$==0))))?(props.Add("started",true),sayRandom(NLG.helloPhrases(),"")):m.$==1&&(a$4=_User(m.$0),a$4!=null&&a$4.$==1&&(a$5=NLU.Intent$1("hello",a$4.$0),a$5!=null&&a$5.$==1&&(a$5.$0[1]==null&&m.$1.$==0)))?say("Hello, tell me your name to get started."):m.$==1&&(a$6=_User(m.$0),a$6!=null&&a$6.$==1&&(a$7=NLU.Intent$1("hello",a$6.$0),a$7!=null&&a$7.$==1&&(a$8=NLU.Entity1Of1("contact",a$7.$0[1]),a$8!=null&&a$8.$==1&&(m.$1.$==0&&($3=a$8.$0,true)))))?(u=$3.get_Value(),sayRandom(NLG.waitRetrievePhrases(),"user name"),Concurrency.Start((b=null,Concurrency.Delay(function()
+  }:null),a!=null&&a.$==1&&(a$2=_User(a.$0),a$2!=null&&a$2.$==1&&(a$3=NLU.Intent$1("hello",a$2.$0),a$3!=null&&a$3.$==1&&(a$3.$0[1]==null&&m.$1.$==0))))?(props.Add("started",true),Dialogue["sayRandom'"](d,NLG.helloPhrases())):m.$==1&&(a$4=_User(m.$0),a$4!=null&&a$4.$==1&&(a$5=NLU.Intent$1("hello",a$4.$0),a$5!=null&&a$5.$==1&&(a$5.$0[1]==null&&m.$1.$==0)))?say("Hello, tell me your name to get started."):m.$==1&&(a$6=_User(m.$0),a$6!=null&&a$6.$==1&&(a$7=NLU.Intent$1("hello",a$6.$0),a$7!=null&&a$7.$==1&&(a$8=NLU.Entity1Of1("contact",a$7.$0[1]),a$8!=null&&a$8.$==1&&(m.$1.$==0&&($3=a$8.$0,true)))))?(u=$3.get_Value(),sayRandom(NLG.waitRetrievePhrases(),"user name"),Concurrency.Start((b=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1234619238",[u]),function(a$35)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:1534589030",[u]),function(a$35)
    {
     var u$1;
     return a$35==null?(say((function($18)
@@ -2180,10 +2115,10 @@
      {
       return $18(Utils.prettyPrint($19));
      };
-    }(Global.id))(u$1.Name)),Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:-468305512",[u$1.Name]),function()
+    }(Global.id))(u$1.Name)),Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.updateUserLastLogin:-761453840",[u$1.Name]),function()
     {
      props.Add("user",u$1);
-     return Concurrency.Combine(u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:-2085202449",[u$1.LastLoggedIn.$0]),function(a$36)
+     return Concurrency.Combine(u$1.LastLoggedIn!=null?Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.humanize:382796928",[u$1.LastLoggedIn.$0]),function(a$36)
      {
       say((function($18)
       {
@@ -2205,7 +2140,7 @@
   })),null)):m.$==1&&(a$9=NLU.Yes(m.$0),a$9!=null&&a$9.$==1&&(a$10=_Response("addUser",a$9.$0),a$10!=null&&a$10.$==1&&(a$11=Str(a$10.$0[1]),a$11!=null&&a$11.$==1&&(m.$1.$==0&&($4=a$11.$0,true)))))?Concurrency.Start((b$1=null,Concurrency.Delay(function()
   {
    sayRandom(NLG.waitAddPhrases(),"user");
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:-468305512",[$4]),function(a$35)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addUser:-761453840",[$4]),function(a$35)
    {
     return a$35==null?(say((function($18)
     {
@@ -2213,7 +2148,7 @@
      {
       return $18("Sorry I was not able to add the user "+Utils.toSafe($19)+" to the system.");
      };
-    }(Global.id))($4)),Concurrency.Zero()):Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1234619238",[$4]),function(a$36)
+    }(Global.id))($4)),Concurrency.Zero()):Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:1534589030",[$4]),function(a$36)
     {
      addProp("user",a$36);
      say((function($18)
@@ -2223,7 +2158,7 @@
        return $18("Hello "+Utils.prettyPrint($19)+", nice to meet you.");
       };
      }(Global.id))($4));
-     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addMessage:-1027718621",[$4,"Welcome to Lerna."]),function()
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.addMessage:-754128706",[$4,"Welcome to Lerna."]),function()
      {
       return Concurrency.Bind(getUserMessages($4),function()
       {
@@ -2240,7 +2175,7 @@
    };
   }(Global.id))($5)):m.$==1&&(($7=_User(m.$0),$7!=null&&$7.$==1)&&m.$1.$==0)?say("Could you introduce yourself so we can get started?"):m.$==1&&(a$15=User$1(m.$0),a$15!=null&&a$15.$==1&&(a$16=NLU.Intent$1("hello",a$15.$0),a$16!=null&&a$16.$==1&&(a$16.$0[0]==null&&(a$17=NLU.Entity1Of1("contact",a$16.$0[1]),a$17!=null&&a$17.$==1&&(m.$1.$==0&&($8=a$17.$0,true))))))?Concurrency.Start((b$2=null,Concurrency.Delay(function()
   {
-   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:-1234619238",[$8.get_Value()]),function(a$35)
+   return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.getUser:1534589030",[$8.get_Value()]),function(a$35)
    {
     return a$35==null?(say((function($18)
     {
@@ -2277,15 +2212,15 @@
    },
    $1:null,
    $2:null
-  })),ITSTutorial.update(cui,props,questions,responses,utterances)):m.$==1&&(a$28=User$1(m.$0),a$28!=null&&a$28.$==1&&(($15=NLU.Intent$1("nextclass",a$28.$0),$15!=null&&$15.$==1)&&m.$1.$==0))?(echo("<iframe src=\"https://calendar.google.com/calendar/embed?src=cocnrm4290919hobq1f5he7leg%40group.calendar.google.com&ctz=America%2FPort_of_Spain\" style=\"border: 0\" width=\"800\" height=\"600\" frameborder=\"0\" scrolling=\"no\"></iframe>"),say("Your next chemistry class is on Monday at 8:30AM.")):m.$==1&&(a$29=User$1(m.$0),a$29!=null&&a$29.$==1&&(a$30=NLU.Intent$1("reference",a$29.$0),a$30!=null&&a$30.$==1&&(a$31=NLU.Entity1Of1("term",a$30.$0[1]),a$31!=null&&a$31.$==1&&(m.$1.$==0&&($16=a$31.$0,true)))))?Concurrency.Start((b$3=null,Concurrency.Delay(function()
+  })),ITSTutorial.update(d)):m.$==1&&(a$28=User$1(m.$0),a$28!=null&&a$28.$==1&&(($15=NLU.Intent$1("nextclass",a$28.$0),$15!=null&&$15.$==1)&&m.$1.$==0))?(echo("<iframe src=\"https://calendar.google.com/calendar/embed?src=cocnrm4290919hobq1f5he7leg%40group.calendar.google.com&ctz=America%2FPort_of_Spain\" style=\"border: 0\" width=\"800\" height=\"600\" frameborder=\"0\" scrolling=\"no\"></iframe>"),say("Your next chemistry class is on Monday at 8:30AM.")):m.$==1&&(a$29=User$1(m.$0),a$29!=null&&a$29.$==1&&(a$30=NLU.Intent$1("reference",a$29.$0),a$30!=null&&a$30.$==1&&(a$31=NLU.Entity1Of1("term",a$30.$0[1]),a$31!=null&&a$31.$==1&&(m.$1.$==0&&($16=a$31.$0,true)))))?Concurrency.Start((b$3=null,Concurrency.Delay(function()
   {
    return Concurrency.Bind(QnAMaker.getAnswer($16.get_Value()),function(a$35)
    {
     var a$36;
     a$36=Arrays.get(a$35.answers,0).answer;
-    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtohtml:1021476303",[a$36]),function(a$37)
+    return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtohtml:358417273",[a$36]),function(a$37)
     {
-     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtotext:1021476303",[a$36]),function(a$38)
+     return Concurrency.Bind((new AjaxRemotingProvider.New()).Async("Lerna.Web:Lerna.Web.Server.mdtotext:358417273",[a$36]),function(a$38)
      {
       echo(a$37);
       say(a$38);
@@ -2298,39 +2233,48 @@
    echo("What is the most accurate definition of an element?<br>1. A bond between molecules<br>2. A substance that cannot be broken down into simpler components.<br>3. A combination of atoms.<br> 4. A part of water.");
    say("What is the most accurate definition of an element? 1. A bond between molecules. 2. A substance that cannot be broken down into simpler components. 3. A combination of atoms 4. A part of water.");
    return Concurrency.Zero();
-  })),null):(popu(),Main.debug("Main interpreter did not understand utterance."),say("Sorry I didn't understand what you meant."),questions.length>0?(q=Seq.nth(0,questions),haveProp(q.get_Name())?say(NLG.replace_tok("$0",props.get_Item(q.get_Name()),q.get_Text())):say(q.get_Text())):void 0);
+  })),null):(Dialogue.popu(d),Dialogue.noUnderstand(d,function(m$1)
+  {
+   Main.debug(m$1);
+  },Main.name()));
   Main.debug((((Runtime.Curried3(function($18,$19,$20)
   {
    return $18("Ending utterances: "+Utils.prettyPrint($19)+". Ending questions:"+Utils.prettyPrint($20)+".");
-  }))(Global.id))(utterances))(questions));
+  }))(Global.id))(utterances))(dialogueQuestions));
  };
  Main.haveQuestion=function(n)
  {
-  return List.exists(function(q)
+  return function(n$1)
   {
-   return q.get_Name()===n;
-  },Main.questions());
+   return Dialogue.haveQuestion(Main.moduleQuestions(),n$1);
+  };
  };
  Main.getQuestion=function(n)
  {
-  return Seq.tryFind(function(q)
+  return function(n$1)
   {
-   return q.get_Name()===n;
-  },Main.questions());
+   return Dialogue.getQuestion(Main.moduleQuestions(),n$1);
+  };
  };
- Main.questions=function()
+ Main.moduleQuestions=function()
  {
   SC$5.$cctor();
-  return SC$5.questions;
+  return SC$5.moduleQuestions;
  };
  Main.debug=function(m)
  {
-  ClientExtensions.debug("Main",m);
+  ClientExtensions.debug(Main.name(),m);
+ };
+ Main.name=function()
+ {
+  SC$5.$cctor();
+  return SC$5.name;
  };
  SC$5.$cctor=function()
  {
   SC$5.$cctor=Global.ignore;
-  SC$5.questions=List.ofArray([new Question({
+  SC$5.name="Main";
+  SC$5.moduleQuestions=List.ofArray([new Question({
    $:0,
    $0:"addUser",
    $1:"Do you want me to add the user $0?",
@@ -2541,7 +2485,12 @@
  Client.push=function(m)
  {
   Client.Utterances().unshift(m);
-  return Client.Utterances();
+  return Client.Dialogue();
+ };
+ Client.Dialogue=function()
+ {
+  SC$7.$cctor();
+  return SC$7.Dialogue;
  };
  Client.Utterances=function()
  {
@@ -2621,7 +2570,7 @@
   SC$7.$cctor=Global.ignore;
   function _main(cui,a,command)
   {
-   var i,e,intent,a$1,_trait,a$2,entity,a$3,$3,x;
+   var i,e,intent,a$1,_trait,a$2,entity,a$3,$3;
    i=command[0];
    e=command[1];
    Client.debug((((Runtime.Curried3(function($4,$5,$6)
@@ -2643,22 +2592,22 @@
    return intent==null&&(_trait==null&&entity==null)?null:(Client.debug(((((Runtime.Curried(function($4,$5,$6,$7)
    {
     return $4("Voice: "+Lerna$Web_GeneratedPrintf.p($5)+" "+Lerna$Web_GeneratedPrintf.p$3($6)+" "+Lerna$Web_GeneratedPrintf.p$5($7));
-   },4))(Global.id))(intent))(_trait))(entity)),x=Client.push(new Utterance({
+   },4))(Global.id))(intent))(_trait))(entity)),Main.update(Client.push(new Utterance({
     $:0,
     $0:intent,
     $1:_trait,
     $2:entity
-   })),Main.update(cui[0],Client.Props(),Client.Questions(),Client.Output(),x));
+   }))));
   }
   function main(cui,term,command)
   {
-   var _cui,$3,$4,$5,$6,a,a$1,a$2,a$3,u,b;
+   var _cui,$3,$4,$5,$6,a,a$1,a$2,a$3,b;
    cui[0]=CUI$1.New(Client.CUI().Voice,Client.CUI().Mic,term,Client.CUI().Avatar,Client.CUI().Caption);
    Unchecked.Equals(cui[0].Mic,null)?Client.initMic(cui,_main):void 0;
    Unchecked.Equals(cui[0].Voice,null)?Client.initSpeech(cui):void 0;
    _cui=cui[0];
    Client.ClientState().$===0?Client.set_ClientState(ClientState.ClientReady):void 0;
-   return($3=Text.Blank(command),$3!=null&&$3.$==1)?Client["say'"]("Tell me what you want me to do or ask me a question."):($4=Text.Debug(command),$4!=null&&$4.$==1)?(Client.debug((new AjaxRemotingProvider.New()).Sync("Lerna.Web:Lerna.Web.Server.tag:287541966",[])),Client.debug((function($7)
+   return($3=Text.Blank(command),$3!=null&&$3.$==1)?Client["say'"]("Tell me what you want me to do or ask me a question."):($4=Text.Debug(command),$4!=null&&$4.$==1)?(Client.debug((new AjaxRemotingProvider.New()).Sync("Lerna.Web:Lerna.Web.Server.tag:794168448",[])),Client.debug((function($7)
    {
     return function($8)
     {
@@ -2676,17 +2625,17 @@
     {
      return $7("Quick Text: "+Lerna$Web_GeneratedPrintf.p$7($8)+".");
     };
-   }(Global.id))($6)),u=Client.push($6),Main.update(_cui,Client.Props(),Client.Questions(),Client.Output(),u),Client.set_ClientState(ClientState.ClientReady)):_cui.Wait((b=null,Concurrency.Delay(function()
+   }(Global.id))($6)),Main.update(Client.push($6)),Client.set_ClientState(ClientState.ClientReady)):_cui.Wait((b=null,Concurrency.Delay(function()
    {
     Client.set_ClientState(ClientState.ClientUnderstand);
     Text.getUtterance(command,function(meaning)
     {
-     var a$4,m,u$1;
+     var a$4,m;
      a$4=Text.HasUtterance(meaning);
      a$4!=null&&a$4.$==1?(m=a$4.$0,Client.debug(((((Runtime.Curried(function($7,$8,$9,$10)
      {
       return $7("Text: Intent: "+Lerna$Web_GeneratedPrintf.p($8)+", Traits: "+Lerna$Web_GeneratedPrintf.p$3($9)+", Entities: "+Lerna$Web_GeneratedPrintf.p$5($10));
-     },4))(Global.id))(m.get_Intent()))(m.get_Traits()))(m.get_Entities())),u$1=Client.push(m),Main.update(_cui,Client.Props(),Client.Questions(),Client.Output(),u$1)):(Client.debug("Text: Did not receive a meaning from the NLU service."),Client["say'"]("Sorry I did not understand what you said."));
+     },4))(Global.id))(m.get_Intent()))(m.get_Traits()))(m.get_Entities())),Main.update(Client.push(m))):(Client.debug("Text: Did not receive a meaning from the NLU service."),Client["say'"]("Sorry I did not understand what you said."));
     });
     Client.set_ClientState(ClientState.ClientReady);
     return Concurrency.Zero();
@@ -2699,12 +2648,24 @@
   SC$7.Output=[];
   SC$7.Questions=[];
   SC$7.Utterances=[];
+  SC$7.Dialogue=new Dialogue$1({
+   $:0,
+   $0:Client.CUI(),
+   $1:Client.Props(),
+   $2:Client.Questions(),
+   $3:Client.Output(),
+   $4:Client.Utterances()
+  });
   SC$7.synth=Global.speechSynthesis;
   SC$7.Main=(mainOpt=(r={},r.name="Main",r.greetings="Welcome to Lerna. Enter 'hello' or 'hello my name is...(you) to initialize speech or say help for more info.",r.prompt=">",r),new Interpreter({
    $:0,
    $0:($1=[Client.CUI()],(Runtime.Curried3(_main))($1)),
    $1:[($2=[Client.CUI()],(Runtime.Curried3(main))($2)),mainOpt]
   }));
+ };
+ Lerna$Web_GeneratedPrintf.p$10=function($1)
+ {
+  return $1==null?"null":"Some "+Utils.prettyPrint($1.$0);
  };
  Lerna$Web_GeneratedPrintf.p$8=function($1)
  {
@@ -2713,10 +2674,6 @@
  Lerna$Web_GeneratedPrintf.p$9=function($1)
  {
   return $1.$==2?"ConceptCompletion "+Utils.prettyPrint($1.$0):$1.$==1?"Disjunctive ("+Utils.prettyPrint($1.$0)+", "+Utils.prettyPrint($1.$1)+")":"Verification "+Utils.prettyPrint($1.$0);
- };
- Lerna$Web_GeneratedPrintf.p$10=function($1)
- {
-  return $1==null?"null":"Some "+Utils.prettyPrint($1.$0);
  };
  Lerna$Web_GeneratedPrintf.p$2=function($1)
  {

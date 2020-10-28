@@ -15,7 +15,7 @@ open SMApp.WebSpeech
 open SMApp.Microphone
 open SMApp.BotLibre
 
-open Lerna.NLU
+open Lerna.Web.Dialogue
 
 [<JavaScript>]
 module Client =
@@ -62,7 +62,8 @@ module Client =
     let Output = new Stack<string>()
     let Questions = new Stack<Question>()
     let Utterances = new Stack<Utterance>()
-    let push (m:Utterance) = Utterances.Push m; Utterances
+    let Dialogue = Dialogue(CUI, Props, Questions, Output, Utterances)
+    let push (m:Utterance) = Utterances.Push m; Dialogue
 
     (* Speech *)
 
@@ -141,7 +142,7 @@ module Client =
             | None, None, None -> ()
             | _ -> 
                 debug <| sprintf "Voice: %A %A %A" intent _trait entity
-                Utterance(intent, _trait, entity) |> push |> Main.update (!cui) Props Questions Output
+                Utterance(intent, _trait, entity) |> push |> Main.update 
         
         /// Terminal interpreter 
         let main (cui: Ref<CUI>) (term:Terminal) (command:string)  =
@@ -170,7 +171,7 @@ module Client =
                     | Text.QuickYes m
                     | Text.QuickNo m -> 
                         debug <| sprintf "Quick Text: %A." m                        
-                        m |> push |> Main.update cui' Props Questions Output
+                        m |> push |> Main.update
                         ClientState <- ClientReady
                     (* Use the NLU service for everything else *)
                     | _->         
@@ -180,7 +181,7 @@ module Client =
                                 match meaning with
                                 | Text.HasUtterance m -> 
                                     debug <| sprintf "Text: Intent: %A, Traits: %A, Entities: %A" m.Intent m.Traits m.Entities
-                                    m |> push |> Main.update cui' Props Questions Output
+                                    m |> push |> Main.update
                                 | _ -> 
                                     debug "Text: Did not receive a meaning from the NLU service." 
                                     say' "Sorry I did not understand what you said."
