@@ -34,16 +34,23 @@ module ClientExtensions =
     
     let toLower (s:string) = s.ToLower()
 
-    let replace_tok (token:string) (value:string) (s:string) = s.Replace(token, value)
+    let termOutput() = JQuery(".terminal-output").Get().[0]
 
     [<Direct("window.speechSynthesis")>]
     let speechSynthesis() = X<SpeechSynthesis>
    
-    let createElement id doc =
-        let el = JS.Document.CreateElement id
-        do doc |> Doc.RunAppend el
-        el
+    let eid = attr.id
+    
+    let cls n = attr.``class`` n
+    
+    let dindex (n:int) = Attr.Create "data-index" (n.ToString())
+    
+    let container c = div [cls "container"] c
 
+    let createElement doc =
+        let el = JS.Document.CreateElement "div"
+        do doc |> Doc.RunAppend el
+        
     let elementHTML (d:Dom.Element) = d.InnerHTML
 
 [<JavaScript>]

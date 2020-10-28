@@ -3,6 +3,8 @@
 open System
 
 open WebSharper
+open WebSharper.JavaScript
+open WebSharper.JavaScript.Dom
 
 [<JavaScript>]
 module Models =  
@@ -48,6 +50,10 @@ module Models =
         Text: string
         IsRead: bool
     }
+
+    type Lecture = Lecture of string * LectureSection list
+    
+    and LectureSection = LectureSection of string * HTMLElement
 
     module Wit = 
         type NLUResponse = {

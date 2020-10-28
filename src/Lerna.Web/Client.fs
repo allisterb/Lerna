@@ -62,7 +62,6 @@ module Client =
     let Output = new Stack<string>()
     let Questions = new Stack<Question>()
     let Utterances = new Stack<Utterance>()
-    
     let push (m:Utterance) = Utterances.Push m; Utterances
 
     (* Speech *)

@@ -20,12 +20,8 @@ module Resources =
 [<JavaScript>]
 module Bs =
     
-    let private eid = attr.id
-    let private cls = attr.``class``
-
-    let container c = div [cls "container"] c
-    
-    let btn id = button [eid id; cls "btn"] []
+    let btnPrimary id label onclick = button [eid id; cls "btn btn-primary"; on.click onclick] [text label]
+    let btnSecondary id label onclick = button [eid id; cls "btn btn-secondary"; on.click onclick] [text label]
 
     let input lbl extras (target, labelExtras, targetExtras) =
         div (cls "form-group" :: extras) [
@@ -60,5 +56,3 @@ module Bs =
                 text lbl
             ]
         ]
-
-    //let btn = button [attr.``type`` "button"; attr.``class`` "btn btn-primary"; attr.id "bar"; attr.text "hello"] [] |> Doc.RunById "left"
