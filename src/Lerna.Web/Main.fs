@@ -115,14 +115,14 @@ module Main =
 
         (* Hello *)
         
-        | Start(User'(Intent "hello" (_, None)))::[] ->  
+        | Start(User'(Intent "greet" (_, None)))::[] ->  
                 props.Add("started", true)
                 sayRandom' helloPhrases
-        | User'(Intent "hello" (_, None))::[] -> say "Hello, tell me your name to get started."
+        | User'(Intent "greet" (_, None))::[] -> say "Hello, tell me your name to get started."
 
         (* User login *)
         
-        | User'(Intent "hello" (_, Entity1Of1 "contact" u))::[] -> loginUser u.Value
+        | User'(Intent "greet" (_, Entity1Of1 "name" u))::[] -> loginUser u.Value
         
         (* User add *)
         
@@ -133,7 +133,7 @@ module Main =
 
         (* User switch *)
         
-        | User(Intent "hello" (None, Entity1Of1 "contact" u))::[] -> 
+        | User(Intent "hello" (None, Entity1Of1 "name" u))::[] -> 
             async {
                 match! Server.getUser u.Value with
                 | Some user -> ask "switchUser" user.Name

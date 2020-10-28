@@ -20,17 +20,18 @@ module NLU =
             member x.Confidence = let (Trait(_, _, c)) = x in c
             override x.ToString() = sprintf "Trait(%s, %A)" x.Name x.Value
 
-    type Entity = Entity of string * string * float32 option
+    type Entity = Entity of string * string * string * float32 option
         with
-            member x.Name = let (Entity(n, _, _)) = x in n
-            member x.Value = let (Entity(_, v, _)) = x in v
-            member x.Confidence = let (Entity(_, _, c)) = x in c
-            override x.ToString() = sprintf "Entity(%s, %s, %A)" x.Name x.Value x.Confidence
+            member x.Name = let (Entity(n, _, _, _)) = x in n
+            member x.Role = let (Entity(_, r, _, _)) = x in r
+            member x.Value = let (Entity(_, _,v,_)) = x in v
+            member x.Confidence = let (Entity(_, _, _, c)) = x in c
+            override x.ToString() = sprintf "Entity(%s, %s, %s, %A)" x.Name x.Role x.Value x.Confidence
 
     type Utterance = Utterance of Intent option * Trait list option * Entity list option with
         member x.Intent = let (Utterance(i, _, _)) = x in i
         member x.Traits = let (Utterance(_, tl, _)) = x in if tl.IsSome then tl.Value |> List.sortBy(fun e -> e.Name) |> Some else None
-        member x.Entities = let (Utterance(_, _, el)) = x in if el.IsSome then el.Value |> List.sortBy(fun e -> e.Name) |> Some else None
+        member x.Entities = let (Utterance(_, _, el)) = x in if el.IsSome then el.Value |> List.sortBy(fun e -> e.Role) |> Some else None
         override x.ToString() = sprintf "%A %A %A" x.Intent x.Traits x.Entities
 
     type Utterance' = Trait list option * Entity list option
@@ -51,41 +52,39 @@ module NLU =
         | m when m.Intent.IsSome && m.Intent.Value.Name = n -> (m.Traits, m.Entities) |> Some
         | _ -> None
         
-    let (|Entity1Of1|_|) (n:string) :Entity list option -> Entity option = 
+    let (|Entity1Of1|_|) (r:string) :Entity list option -> Entity option = 
         function
-        | Some(entity::[]) when entity.Name = n -> Some entity
+        | Some(entity::[]) when entity.Role = r -> Some entity
         | _ -> None
 
-    let (|Entity1OfAny|_|) (n:string) :Entity list option -> Entity option = 
+    let (|Entity1OfAny|_|) (r:string) :Entity list option -> Entity option = 
         function
-        | Some el when el |> List.exists(fun e -> e.Name = n) -> 
-            el |> List.where(fun e -> e.Name = n) 
-            |> List.sortBy(fun e -> e.Name)
+        | Some el when el |> List.exists(fun e -> e.Role = r) -> 
+            el |> List.where(fun e -> e.Role = r) 
+            |> List.sortBy(fun e -> e.Role)
             |> List.head 
             |> Some 
         | _ -> None
 
-    let (|EntityManyOf1|_|) (n:string) :Entity list option -> Entity list option = 
+    let (|EntityManyOf1|_|) (r:string) :Entity list option -> Entity list option = 
         function
-        | Some entities when entities |> List.exists(fun e -> e.Name = n) -> entities |> List.where(fun e -> e.Name = n) |> Some  
+        | Some entities when entities |> List.exists(fun e -> e.Role = r) -> entities |> List.where(fun e -> e.Role = r) |> Some  
         | _ -> None
 
-    let (|EntityManyofMany|_|) (names:string list) :Entity list -> Map<string, Entity list option> option = 
+    let (|EntityManyofMany|_|) (roles:string list) :Entity list -> Map<string, Entity list option> option = 
         function
         | el -> 
             let matches = 
-                names |> List.map(fun n -> if (el |> List.exists(fun e -> e.Name = n)) then (n, Some(el |> List.where(fun e' -> e'.Name = n))) else (n ,None)) |> Map.ofList
+                roles |> List.map(fun r -> if (el |> List.exists(fun e -> e.Role = r)) then (r, Some(el |> List.where(fun e' -> e'.Role = r))) else (r ,None)) |> Map.ofList
             Some matches
         
     let (|Yes|_|) :Utterance -> Utterance option= 
         function 
-        | Intent "yes" (None, None) as m -> Some m
         | Intent "verify" (None, None) as m -> Some m
         |  _ -> None
 
     let (|No|_|) :Utterance -> Utterance option= 
         function 
-        | Intent "no" (None, None) as m  -> Some m
         | Intent "reject" (None, None) as m -> Some m
         |  _ -> None
 
@@ -95,7 +94,7 @@ module NLU =
         
         let (|Entity'|_|)  :obj->Entity option =
             function
-            | o when o.GetJS("contact") |> isNull |> not -> Entity("contact", o.GetJS("contact").GetJS("value") :?> string |> toLower, None) |> Some
+            | o when o.GetJS("contact") |> isNull |> not -> Entity("contact", "", o.GetJS("contact").GetJS("value") :?> string |> toLower, None) |> Some
             | _ -> None
 
         let (|Trait'|_|) : obj -> Trait option =
@@ -174,19 +173,19 @@ module NLU =
         let (|One|_|) =
             function
             | "1"
-            | "one" -> Utterance(Some(Intent("questionresponse", Some 1.0f)), None, Some([Entity("wit/ordinal", "one", Some 1.0f)])) |> Some
+            | "one" -> Utterance(Some(Intent("questionresponse", Some 1.0f)), None, Some([Entity("wit/ordinal", "", "one", Some 1.0f)])) |> Some
             | _ -> None
 
         let (|Two|_|) =
             function
             | "2"
-            | "two" -> Utterance(Some(Intent("questionresponse", Some 1.0f)), None, Some([Entity("wit/ordinal", "two", Some 1.0f)])) |> Some
+            | "two" -> Utterance(Some(Intent("questionresponse", Some 1.0f)), None, Some([Entity("wit/ordinal", "", "two", Some 1.0f)])) |> Some
             | _ -> None
 
         let (|Three|_|) =
             function
             | "3"
-            | "three" -> Utterance(Some(Intent("questionresponse", Some 1.0f)), None, Some([Entity("wit/ordinal", "three", Some 1.0f)])) |> Some
+            | "three" -> Utterance(Some(Intent("questionresponse", Some 1.0f)), None, Some([Entity("wit/ordinal", "", "three", Some 1.0f)])) |> Some
             | _ -> None
 
         let (|QuickNumber|_|) =
@@ -234,7 +233,7 @@ module NLU =
 
         let private witapi = new WitApi("Y7GDBZV33TW2MLC3BQB2CJHZV5MKWXQU")
          
-        let private entity_types = ["wit$contact:contact"; "wit$datetime:datetime"; "subject:subject"; "term:term"]
+        let private entity_types = ["wit$contact:name"; "wit$datetime:datetime"; "term:subject"; "term:object"; "term:verb";]
 
         let private trait_types = ["domain"; "dialogue_act"]
 
@@ -283,7 +282,7 @@ module NLU =
                 let entities' = 
                     entities 
                     |> List.where(fun e -> e.Confidence > entityConfidenceThreshold) 
-                    |> List.map(fun e -> Entity(e.Role |> toLower, e.Value, Some(e.Confidence)))
+                    |> List.map(fun e -> Entity(e.Name, e.Role |> toLower, e.Value, Some(e.Confidence)))
                 let traits' = 
                     traits 
                     |> List.where(fun t -> t.Confidence > entityConfidenceThreshold) 
@@ -297,7 +296,7 @@ module NLU =
                     let entities' = 
                         m.Value.Entities |> 
                         List.where(fun e -> e.Confidence > entityConfidenceThreshold) 
-                        |> List.map(fun e -> Entity(e.Role |> toLower, e.Value, Some(e.Confidence)))
+                        |> List.map(fun e -> Entity(e.Name, e.Role |> toLower, e.Value, Some(e.Confidence)))
                     Utterance(Some(Intent(m.Value.TopIntent.Name |> toLower, Some m.Value.TopIntent.Confidence)), None, Some(entities')) |> Some
 
             | Some(Utterance'(intents, [], _)) as m when intents.Length > 0 && m.Value.TopIntent.Confidence > intentConfidenceThreshold  -> 
@@ -311,7 +310,7 @@ module NLU =
                     let entities' = 
                         m.Value.Entities |> 
                         List.where(fun e -> e.Confidence > entityConfidenceThreshold) 
-                        |> List.map(fun e -> Entity(e.Role |> toLower, e.Value, Some(e.Confidence))) 
+                        |> List.map(fun e -> Entity(e.Name, e.Role |> toLower, e.Value, Some(e.Confidence))) 
                     let traits' = 
                         m.Value.Traits |> 
                         List.where(fun e -> e.Confidence > entityConfidenceThreshold) 

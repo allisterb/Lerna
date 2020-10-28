@@ -20,8 +20,8 @@
     <Compile Include="Models.fs" />
     <Compile Include="ClientExtensions.fs" />
     <Compile Include="Bootstrap.fs" />
-    <Compile Include="NLG.fs" />
     <Compile Include="NLU.fs" />
+    <Compile Include="NLG.fs" />
     <Compile Include="CUI.fs" />
     <Compile Include="Server.fs" />
     <Compile Include="Dialogue.fs" />

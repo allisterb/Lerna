@@ -43,7 +43,6 @@ module Client =
             web
         Caption = false
     }
-
     let mutable MicState = MicNotInitialized
     let mutable ClientState = ClientNotInitialzed
     
